@@ -7,20 +7,78 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+  <!-- HEADER -->
   <header>
     <h1>Math Olympiad Nepal</h1>
-    <p>District & Province Level - Volunteer Blog & Problem Collection</p>
+    <p>Explore Articles, Blogs, and Sample Questions for DMO & PMO</p>
   </header>
 
+  <!-- NAVIGATION -->
   <nav>
-    <ul>
-      <li><a href="articles/dmo_guide.html">DMO Guide</a></li>
-      <!-- Add other articles here -->
-    </ul>
+    <a href="index.html">Home</a>
+    <a href="experience.html">My Experience</a>
+    <a href="articles/dmo_guide.html">Articles</a>
+    <a href="#questions">Questions</a>
   </nav>
 
-  <footer>
-    <p>Volunteer: Prasiddha Subedi</p>
-  </footer>
+  <!-- ARTICLES / BLOG SECTION -->
+  <section id="articles">
+    <h2>Articles & Blogs</h2>
+    <div class="cards">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1603039337110-fc1b7b53e07d?auto=format&fit=crop&w=600&h=300" alt="DMO Guide">
+        <h3>DMO Guide</h3>
+        <p>Basic information about District Math Olympiad, tips, and FAQ.</p>
+        <a href="articles/dmo_guide.html" class="btn">Read More</a>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1596495577886-d920f1e21b1e?auto=format&fit=crop&w=600&h=300" alt="Coming Soon">
+        <h3>Future Articles</h3>
+        <p>More articles and blogs will be added soon.</p>
+        <span class="btn disabled">Coming Soon</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUESTIONS SECTION -->
+  <section id="questions">
+    <h2>Questions</h2>
+    <div class="question-buttons">
+      <button id="dmoBtn" onclick="showDMO()">DMO</button>
+      <button id="pmoBtn" disabled>PMO</button>
+    </div>
+
+    <!-- DMO Content -->
+    <div id="dmoContent">
+      <h3>Sample Questions</h3>
+
+      <div class="pdf-container">
+        <p>PDF 1</p>
+        <iframe src="https://drive.google.com/file/d/1HMT5ubnuk2V1-JhtrR5qaE1YOtST3Bk5/preview" width="100%" height="500px"></iframe>
+      </div>
+      <div class="pdf-container">
+        <p>PDF 2</p>
+        <iframe src="https://drive.google.com/file/d/1-_yicJJDePmZPAjSMPK-hGowiGmTefNK/preview" width="100%" height="500px"></iframe>
+      </div>
+      <!-- Add remaining PDFs as needed in the same structure -->
+    </div>
+
+    <div id="pmoContent" style="display:none; text-align:center; padding:20px;">
+      <p style="color:gray;">PMO section will be added soon.</p>
+    </div>
+  </section>
+
+  <script>
+    function showDMO() {
+      document.getElementById('dmoContent').style.display = 'block';
+      document.getElementById('pmoContent').style.display = 'none';
+    }
+    function showPMO() {
+      document.getElementById('dmoContent').style.display = 'none';
+      document.getElementById('pmoContent').style.display = 'block';
+    }
+  </script>
+
 </body>
 </html>
