@@ -5,84 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Questions - Math Olympiad Nepal</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .pdf-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+    }
+    .pdf-frame {
+      width: 100%;
+      height: 500px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+    }
+    h2 {
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .pdf-section {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 12px;
+    }
+  </style>
 </head>
-<body>
-
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="experience.html">My Experience</a>
-    <a href="articles/dmo_guide.html">Articles</a>
-    <a href="questions.html">Questions</a>
+<body style="background-color: #f0f0f0;">
+  <nav class="navbar">
+    <div class="logo">Math Olympiad Nepal</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="experience.html">My Experience</a></li>
+      <li><a href="questions.html">Questions</a></li>
+      <li><a href="articles/dmo_guide.html">DMO Guide</a></li>
+    </ul>
   </nav>
 
-  <header style="background-image:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/...');">
-    <h1>Math Olympiad Questions</h1>
-  </header>
-
-  <section style="padding:40px 20px;">
-    <div class="question-buttons">
-      <button onclick="showDMO()">DMO</button>
-      <button disabled>PMO</button>
-    </div>
-
-    <div id="dmoContent">
+  <main class="content">
+    <section class="pdf-section">
       <h2>DMO Sample Questions</h2>
-
       <div class="pdf-container">
-        <p>PDF 1</p>
-        <iframe src="https://drive.google.com/file/d/1HMT5ubnuk2V1-JhtrR5qaE1YOtST3Bk5/preview" width="100%" height="500px"></iframe>
+        <iframe src="https://drive.google.com/file/d/1HMT5ubnuk2V1-JhtrR5qaE1YOtST3Bk5/preview" class="pdf-frame"></iframe>
+        <iframe src="https://drive.google.com/file/d/1-_yicJJDePmZPAjSMPK-hGowiGmTefNK/preview" class="pdf-frame"></iframe>
+        <iframe src="https://drive.google.com/file/d/1lstCFZVOTJPcF0ALDhD0uzjbQPouwjQS/preview" class="pdf-frame"></iframe>
+        <iframe src="https://drive.google.com/file/d/1pntGqKa5IkeqKZVCVKCbOAa17GWx72MR/preview" class="pdf-frame"></iframe>
+        <iframe src="https://drive.google.com/file/d/1i84CHNoeLqag1WWKnYRrQzwf1aEAGWb1/preview" class="pdf-frame"></iframe>
+        <iframe src="https://drive.google.com/file/d/1u1xcxpUQQgPALR2NG9LDkny97k9JqMMj/preview" class="pdf-frame"></iframe>
+        <iframe src="https://drive.google.com/file/d/1R4-h0inXobmdrWGPAOjRYH0oJSm0_72f/preview" class="pdf-frame"></iframe>
+        <iframe src="https://drive.google.com/file/d/1VL0cypLjYIlgx9z9fncf7AOcf3IFkYrA/preview" class="pdf-frame"></iframe>
+        <iframe src="https://drive.google.com/file/d/1i3QghmkrX0ntAPc03YLkMy6bWmvgmRJN/preview" class="pdf-frame"></iframe>
+        <iframe src="https://drive.google.com/file/d/1PiG3LpZvvnY7PjY98GiV_R2_LrpDNNs-/preview" class="pdf-frame"></iframe>
       </div>
-      <div class="pdf-container">
-        <p>PDF 2</p>
-        <iframe src="https://drive.google.com/file/d/1-_yicJJDePmZPAjSMPK-hGowiGmTefNK/preview" width="100%" height="500px"></iframe>
-      </div>
-      <div class="pdf-container">
-        <p>PDF 3</p>
-        <iframe src="https://drive.google.com/file/d/1lstCFZVOTJPcF0ALDhD0uzjbQPouwjQS/preview" width="100%" height="500px"></iframe>
-      </div>
-      <div class="pdf-container">
-        <p>PDF 4</p>
-        <iframe src="https://drive.google.com/file/d/1pntGqKa5IkeqKZVCVKCbOAa17GWx72MR/preview" width="100%" height="500px"></iframe>
-      </div>
-      <div class="pdf-container">
-        <p>PDF 5</p>
-        <iframe src="https://drive.google.com/file/d/1i84CHNoeLqag1WWKnYRrQzwf1aEAGWb1/preview" width="100%" height="500px"></iframe>
-      </div>
-      <div class="pdf-container">
-        <p>PDF 6</p>
-        <iframe src="https://drive.google.com/file/d/1u1xcxpUQQgPALR2NG9LDkny97k9JqMMj/preview" width="100%" height="500px"></iframe>
-      </div>
-      <div class="pdf-container">
-        <p>PDF 7</p>
-        <iframe src="https://drive.google.com/file/d/1R4-h0inXobmdrWGPAOjRYH0oJSm0_72f/preview" width="100%" height="500px"></iframe>
-      </div>
-      <div class="pdf-container">
-        <p>PDF 8</p>
-        <iframe src="https://drive.google.com/file/d/1VL0cypLjYIlgx9z9fncf7AOcf3IFkYrA/preview" width="100%" height="500px"></iframe>
-      </div>
-      <div class="pdf-container">
-        <p>PDF 9</p>
-        <iframe src="https://drive.google.com/file/d/1i3QghmkrX0ntAPc03YLkMy6bWmvgmRJN/preview" width="100%" height="500px"></iframe>
-      </div>
-      <div class="pdf-container">
-        <p>PDF 10</p>
-        <iframe src="https://drive.google.com/file/d/1PiG3LpZvvnY7PjY98GiV_R2_LrpDNNs-/preview" width="100%" height="500px"></iframe>
-      </div>
-
-    </div>
-
-    <div id="pmoContent" style="display:none; text-align:center; padding:20px;">
-      <p style="color:gray;">PMO section will be added soon.</p>
-    </div>
-
-  </section>
-
-  <script>
-    function showDMO() {
-      document.getElementById('dmoContent').style.display = 'block';
-      document.getElementById('pmoContent').style.display = 'none';
-    }
-  </script>
-
+    </section>
+  </main>
 </body>
 </html>
