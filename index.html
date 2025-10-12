@@ -1,44 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Help for Math Olympiad</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help for Math Olympiad</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <nav>
+            <div class="logo">Math Olympiad Help</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="questions.html">Questions</a></li>
+                <li><a href="articles.html">Articles</a></li>
+            </ul>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        </nav>
+    </header>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="logo">Help for Math Olympiad</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="experience.html">My Experience</a></li>
-      <li><a href="questions.html">Questions</a></li>
-      <li><a href="articles/dmo_guide.html">DMO Guide</a></li>
-    </ul>
-  </nav>
+    <main class="home">
+        <section class="intro">
+            <h1>Help for Math Olympiad</h1>
+            <p>Welcome to a volunteer project dedicated to supporting Math Olympiad learners across Nepal. Explore problem sets, articles, and learning guides to enhance your preparation for DMO, PMO, and beyond.</p>
+            <div class="button-group">
+                <a href="questions.html" class="btn">Questions</a>
+                <a href="articles.html" class="btn">Articles</a>
+            </div>
+        </section>
+    </main>
 
-  <!-- Hero Section -->
-  <section class="hero" style="background-color: #f0f0f0; color: #222; text-align:center; padding:80px 20px;">
-    <h1 style="font-size:2.5em; margin-bottom:20px;">Your Guide to Math Olympiad Success</h1>
-    <p style="font-size:1.2em; max-width:700px; margin:auto; line-height:1.6;">
-      Explore questions, tips, and guides to prepare smartly for DMO, PMO, and other competitions in Nepal. Navigate the website to start learning and practicing effectively.
-    </p>
-    <div class="hero-buttons" style="margin-top:30px;">
-      <a href="questions.html" class="btn btn-dmo" style="margin:5px;">Explore Questions</a>
-      <a href="articles/dmo_guide.html" class="btn btn-guide" style="margin:5px;">DMO Guide</a>
-      <a href="experience.html" class="btn btn-experience" style="margin:5px;">My Experience</a>
-    </div>
-  </section>
+    <footer>
+        <p>© 2025 Math Olympiad Help | Volunteer Initiative</p>
+    </footer>
 
-  <!-- About Section -->
-  <section class="content" style="text-align:center; padding: 60px 20px;">
-    <h2 style="margin-bottom:20px;">Prepare Smart, Achieve More</h2>
-    <p style="max-width:750px; margin:auto; line-height:1.6;">
-      This website is dedicated to Math Olympiad aspirants in Nepal. You will find sample questions, useful guides, and tips to help you succeed in district-level and national-level competitions. Use the navigation buttons above to start exploring.
-    </p>
-  </section>
-
+    <script>
+        function toggleMenu() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
