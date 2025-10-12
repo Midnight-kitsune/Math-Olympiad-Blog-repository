@@ -3,36 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DMO Sample Questions - Math Olympiad Nepal</title>
+  <title>DMO Sample Questions</title>
   <link rel="stylesheet" href="../styles.css">
+  <style>
+    .pdf-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .pdf-list button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      transition: 0.3s;
+    }
+
+    .pdf-list button:hover {
+      background-color: #45a049;
+    }
+
+    .pdf-frame {
+      width: 100%;
+      height: 600px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    @media(max-width: 768px) {
+      .pdf-frame {
+        height: 400px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="logo">Math Olympiad Nepal</div>
-    <ul class="nav-links">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="../questions.html">Questions</a></li>
-      <li><a href="dmo_questions.html">DMO Sample Questions</a></li>
-    </ul>
-  </nav>
 
-  <main class="content">
-    <h1>DMO Sample Questions</h1>
-    <p>All sample questions from past District-level Math Olympiads are available below. Scroll through each PDF to practice effectively.</p>
+<nav class="navbar">
+  <div class="logo">NPLIMO-Volunteer : Prasiddha Subedi</div>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../questions.html">Questions</a></li>
+    <li><a href="articles.html">Articles</a></li>
+  </ul>
+</nav>
 
-    <div class="pdf-container">
-      <iframe src="https://drive.google.com/file/d/1HMT5ubnuk2V1-JhtrR5qaE1YOtST3Bk5/preview" class="pdf-frame"></iframe>
-      <iframe src="https://drive.google.com/file/d/1-_yicJJDePmZPAjSMPK-hGowiGmTefNK/preview" class="pdf-frame"></iframe>
-      <iframe src="https://drive.google.com/file/d/1lstCFZVOTJPcF0ALDhD0uzjbQPouwjQS/preview" class="pdf-frame"></iframe>
-      <iframe src="https://drive.google.com/file/d/1pntGqKa5IkeqKZVCVKCbOAa17GWx72MR/preview" class="pdf-frame"></iframe>
-      <iframe src="https://drive.google.com/file/d/1i84CHNoeLqag1WWKnYRrQzwf1aEAGWb1/preview" class="pdf-frame"></iframe>
-      <iframe src="https://drive.google.com/file/d/1u1xcxpUQQgPALR2NG9LDkny97k9JqMMj/preview" class="pdf-frame"></iframe>
-      <iframe src="https://drive.google.com/file/d/1R4-h0inXobmdrWGPAOjRYH0oJSm0_72f/preview" class="pdf-frame"></iframe>
-      <iframe src="https://drive.google.com/file/d/1VL0cypLjYIlgx9z9fncf7AOcf3IFkYrA/preview" class="pdf-frame"></iframe>
-      <iframe src="https://drive.google.com/file/d/1i3QghmkrX0ntAPc03YLkMy6bWmvgmRJN/preview" class="pdf-frame"></iframe>
-      <iframe src="https://drive.google.com/file/d/1PiG3LpZvvnY7PjY98GiV_R2_LrpDNNs-/preview" class="pdf-frame"></iframe>
-    </div>
-  </main>
+<main class="content">
+  <h1 style="text-align:center; margin-bottom:30px;">DMO Sample Questions</h1>
+
+  <div class="pdf-list">
+    <button onclick="openPDF(1)">Sample Questions - PDF 1</button>
+    <button onclick="openPDF(2)">Sample Questions - PDF 2</button>
+    <button onclick="openPDF(3)">Sample Questions - PDF 3</button>
+    <button onclick="openPDF(4)">Sample Questions - PDF 4</button>
+    <button onclick="openPDF(5)">Sample Questions - PDF 5</button>
+    <button onclick="openPDF(6)">Sample Questions - PDF 6</button>
+    <button onclick="openPDF(7)">Sample Questions - PDF 7</button>
+    <button onclick="openPDF(8)">Sample Questions - PDF 8</button>
+    <button onclick="openPDF(9)">Sample Questions - PDF 9</button>
+    <button onclick="openPDF(10)">Sample Questions - PDF 10</button>
+  </div>
+
+  <iframe id="pdf-frame" class="pdf-frame" src=""></iframe>
+
+</main>
+
+<script>
+  const pdfLinks = [
+    "https://drive.google.com/file/d/1HMT5ubnuk2V1-JhtrR5qaE1YOtST3Bk5/preview",
+    "https://drive.google.com/file/d/1-_yicJJDePmZPAjSMPK-hGowiGmTefNK/preview",
+    "https://drive.google.com/file/d/1lstCFZVOTJPcF0ALDhD0uzjbQPouwjQS/preview",
+    "https://drive.google.com/file/d/1pntGqKa5IkeqKZVCVKCbOAa17GWx72MR/preview",
+    "https://drive.google.com/file/d/1i84CHNoeLqag1WWKnYRrQzwf1aEAGWb1/preview",
+    "https://drive.google.com/file/d/1u1xcxpUQQgPALR2NG9LDkny97k9JqMMj/preview",
+    "https://drive.google.com/file/d/1R4-h0inXobmdrWGPAOjRYH0oJSm0_72f/preview",
+    "https://drive.google.com/file/d/1VL0cypLjYIlgx9z9fncf7AOcf3IFkYrA/preview",
+    "https://drive.google.com/file/d/1i3QghmkrX0ntAPc03YLkMy6bWmvgmRJN/preview",
+    "https://drive.google.com/file/d/1PiG3LpZvvnY7PjY98GiV_R2_LrpDNNs-/preview"
+  ];
+
+  function openPDF(index) {
+    const frame = document.getElementById('pdf-frame');
+    frame.src = pdfLinks[index-1];
+    frame.scrollIntoView({behavior: "smooth"});
+  }
+</script>
+
 </body>
 </html>
