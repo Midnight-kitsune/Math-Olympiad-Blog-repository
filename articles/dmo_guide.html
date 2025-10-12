@@ -1,52 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DMO Guide - Math Olympiad Nepal</title>
-  <link rel="stylesheet" href="../styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles | Math Olympiad Help</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<header>
+    <nav>
+        <div class="logo">Math Olympiad Help</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="questions.html">Questions</a></li>
+            <li><a href="articles.html" class="active">Articles</a></li>
+        </ul>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    </nav>
+</header>
 
-  <nav class="navbar">
-    <div class="logo">NPLIMO-Volunteer : Prasiddha Subedi</div>
-    <ul class="nav-links">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="../experience.html">My Experience</a></li>
-      <li><a href="../questions.html">Questions</a></li>
-      <li><a href="dmo_guide.html">DMO Guide</a></li>
-    </ul>
-  </nav>
+<main class="articles">
+    <h1>Articles & Guides</h1>
 
-  <main class="content">
-    <h1>District-level Math Olympiad (DMO) Guide</h1>
+    <article>
+        <h2>DMO Overview</h2>
+        <p><strong>NPLIMO-Volunteer:</strong> Prasiddha Subedi</p>
+        <p>
+            The District Mathematical Olympiad (DMO) serves as the first step for students across Nepal aspiring to participate in the International Mathematical Olympiad (IMO). This guide provides an overview of DMO structure, question pattern, and preparation resources.
+        </p>
+        <h3>DMO Structure</h3>
+        <ul>
+            <li>First round of Olympiad selection in Nepal</li>
+            <li>Organized by the Nepal Mathematical Society (NMS)</li>
+            <li>Includes both subjective and objective questions</li>
+        </ul>
+        <h3>Preparation Tips</h3>
+        <ul>
+            <li>Study past questions carefully and understand key concepts.</li>
+            <li>Practice logical reasoning and number theory.</li>
+            <li>Focus on proofs, geometry, and combinatorics.</li>
+        </ul>
+    </article>
+</main>
 
-    <p>
-      The DMO is the first stage of the Math Olympiad journey in Nepal. 
-      It is usually held around December, but dates vary for each district.
-      Registration can be done at the venue for convenience. Venue and date will be announced prior to the DMO.
-    </p>
+<footer>
+    <p>© 2025 Math Olympiad Help | Volunteer Initiative</p>
+</footer>
 
-    <h2>FAQ</h2>
-    <p><strong>Q:</strong> Can we use a calculator?<br>
-       <strong>A:</strong> Of course, calculators are allowed.</p>
-
-    <h2>Format</h2>
-    <ul>
-      <li>50 multiple-choice questions (MCQs)</li>
-      <li>Time: 100 minutes</li>
-      <li>Cutoff: 25 marks to qualify for PMO</li>
-      <li>No negative marking; attempt all questions</li>
-    </ul>
-
-    <h2>Tips</h2>
-    <ul>
-      <li>Review basic math formulas before DMO.</li>
-      <li>Stay calm; don’t panic during the exam.</li>
-      <li>Manage time wisely. Don’t rush answers but also don’t leave questions unanswered.</li>
-    </ul>
-
-  </main>
-
+<script>
+    function toggleMenu() {
+        document.querySelector('.nav-links').classList.toggle('active');
+    }
+</script>
 </body>
 </html>
