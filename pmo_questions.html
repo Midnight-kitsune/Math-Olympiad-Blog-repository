@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMO Sample Questions - Help for Math Olympiad</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background-color: #f0f0f0; }
+    .page-header { text-align: center; font-size: 2rem; margin: 30px 0; }
+    .nav-links a { font-size: 16px; }
+    .pdf-buttons { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .pdf-buttons button { padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; border: none; background-color: #4CAF50; color: white; }
+    .pdf-buttons button:hover { background-color: #45a049; }
+    .pdf-container { width: 95%; max-width: 900px; margin: auto; }
+    .pdf-frame { width: 100%; height: 600px; border: 2px solid #ccc; border-radius: 10px; margin-top: 20px; display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Help for Math Olympiad</div>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../questions.html">Questions</a></li>
+      <li><a href="articles.html">Articles</a></li>
+    </ul>
+  </nav>
+
+  <!-- Page Header -->
+  <h2 class="page-header">PMO Sample Questions</h2>
+
+  <!-- PDF Buttons -->
+  <div class="pdf-buttons">
+    <button onclick="showPDF(1)">PMO Sample Question - PDF 1</button>
+    <button onclick="showPDF(2)">PMO Sample Question - PDF 2</button>
+    <button onclick="showPDF(3)">PMO Sample Question - PDF 3</button>
+  </div>
+
+  <!-- PDF Frames -->
+  <div class="pdf-container">
+    <iframe id="pdf1" class="pdf-frame" src="https://drive.google.com/file/d/1c0g54cX-tC9rSNDiVCYGtZihQ_DjSqDZ/preview" allow="autoplay"></iframe>
+    <iframe id="pdf2" class="pdf-frame" src="https://drive.google.com/file/d/1xI-IQ8teyI1zFIRyh2W4dQwipQ-T7AxX/preview" allow="autoplay"></iframe>
+    <iframe id="pdf3" class="pdf-frame" src="https://drive.google.com/file/d/1-OK3zKlQSg3VhmM0hdvDCZWeHcZvNs9d/preview" allow="autoplay"></iframe>
+  </div>
+
+  <script>
+    function showPDF(num) {
+      // Hide all PDFs
+      document.querySelectorAll('.pdf-frame').forEach(pdf => pdf.style.display = 'none');
+      // Show selected PDF
+      document.getElementById('pdf' + num).style.display = 'block';
+      // Scroll to PDF smoothly
+      document.getElementById('pdf' + num).scrollIntoView({behavior: 'smooth'});
+    }
+  </script>
+
+</body>
+</html>
