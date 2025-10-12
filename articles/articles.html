@@ -3,8 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Articles - Math Olympiad Nepal</title>
+  <title>Articles - Help for Math Olympiad</title>
   <link rel="stylesheet" href="../styles.css">
+  <style>
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    .btn {
+      padding: 14px 25px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: 0.3s;
+    }
+    .btn-dmo {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .btn-dmo:hover {
+      background-color: #45a049;
+    }
+    .btn-pmo {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .btn-disabled {
+      background-color: #ccc;
+      color: #666;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -18,14 +53,15 @@
 
   <main class="content" style="text-align:center;">
     <h1>Articles & Guides</h1>
-    <p style="max-width:700px;margin:auto;margin-bottom:30px;">
+    <p style="max-width:700px; margin:auto; margin-bottom:30px;">
       Explore various guides related to the Math Olympiad journey. More articles and topics will be added soon.
     </p>
 
     <div class="button-container">
+      <button class="btn btn-disabled">About IMO</button>
       <a href="dmo_guide.html" class="btn btn-dmo">DMO Guide</a>
-      <button class="btn btn-pmo" disabled>PMO Guide</button>
-      <button class="btn btn-pmo" disabled>Coming Soon</button>
+      <a href="pmo_guide.html" class="btn btn-pmo">PMO Guide</a>
+      <button class="btn btn-disabled">Coming Soon</button>
     </div>
   </main>
 </body>
