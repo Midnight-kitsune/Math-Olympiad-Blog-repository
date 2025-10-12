@@ -13,7 +13,7 @@
     .btn-dmo:hover { background-color: #45a049; }
     .btn-pmo { background-color: #4CAF50; color: white; }
     .btn-disabled { background-color: #ccc; color: #666; cursor: not-allowed; }
-    .page-header { text-align: center; font-size: 1.8rem; margin-top: 30px; color: #333; }
+    .section-header { text-align: center; font-size: 1.8rem; margin-top: 30px; }
   </style>
 </head>
 <body>
@@ -28,8 +28,8 @@
   </nav>
 
   <main class="content">
-    <!-- Page Header -->
-    <h2 class="page-header">Questions Section</h2>
+    <!-- Section Header -->
+    <h2 class="section-header">Questions Section</h2>
 
     <!-- Main Buttons -->
     <div class="button-container">
@@ -45,7 +45,7 @@
 
     <!-- PMO Sub-buttons -->
     <div id="pmo-sub-buttons" class="sub-button-container" style="display:none;">
-      <button class="btn btn-disabled">PMO - Sample Questions</button>
+      <button class="btn btn-pmo" onclick="window.location.href='pmo_questions.html'">PMO - Sample Questions</button>
       <button class="btn btn-disabled">PMO - Other Questions</button>
     </div>
   </main>
@@ -63,4 +63,3 @@
   </script>
 </body>
 </html>
-
