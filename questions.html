@@ -5,6 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Questions - Help for Math Olympiad</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Make buttons larger and clean spacing */
+    .sub-button-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 16px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      transition: 0.3s;
+    }
+
+    .btn-dmo {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .btn-dmo:hover {
+      background-color: #45a049;
+    }
+
+    .btn-pmo {
+      background-color: #ccc;
+      color: #666;
+      cursor: not-allowed;
+    }
+
+    @media(max-width: 768px){
+      .btn {
+        width: 80%;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -22,33 +63,33 @@
     <h1 style="text-align:center; margin-bottom:30px;">Questions Section</h1>
 
     <!-- Main Buttons -->
-    <div class="button-container">
+    <div class="button-container" style="text-align:center;">
       <button class="btn btn-dmo" onclick="toggleDMO()">DMO Questions</button>
-      <button class="btn btn-pmo" onclick="togglePMO()">PMO Questions</button>
+      <button class="btn btn-dmo" onclick="togglePMO()">PMO Questions</button>
     </div>
 
-    <!-- DMO Sub-buttons (appear only when DMO clicked) -->
-    <div id="dmo-sub" class="sub-button-container" style="display:none; text-align:center; margin-top:20px;">
+    <!-- DMO Sub-buttons -->
+    <div id="dmo-sub" class="sub-button-container" style="display:none;">
       <button class="btn btn-dmo" onclick="window.location.href='dmo_questions.html'">Sample Questions</button>
       <button class="btn btn-pmo" disabled>Other Questions</button>
     </div>
 
-    <!-- PMO Sub-buttons (appear only when PMO clicked) -->
-    <div id="pmo-sub" class="sub-button-container" style="display:none; text-align:center; margin-top:20px;">
-      <button class="btn btn-dmo" disabled>Model Questions</button>
-      <button class="btn btn-pmo" disabled>Extra Questions</button>
+    <!-- PMO Sub-buttons -->
+    <div id="pmo-sub" class="sub-button-container" style="display:none;">
+      <button class="btn btn-dmo" disabled>Sample Questions</button>
+      <button class="btn btn-pmo" disabled>Other Questions</button>
     </div>
 
   </main>
 
   <script>
     function toggleDMO() {
-      document.getElementById('dmo-sub').style.display = 'block';
+      document.getElementById('dmo-sub').style.display = 'flex';
       document.getElementById('pmo-sub').style.display = 'none';
     }
 
     function togglePMO() {
-      document.getElementById('pmo-sub').style.display = 'block';
+      document.getElementById('pmo-sub').style.display = 'flex';
       document.getElementById('dmo-sub').style.display = 'none';
     }
   </script>
