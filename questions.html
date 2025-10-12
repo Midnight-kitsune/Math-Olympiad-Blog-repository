@@ -1,22 +1,33 @@
 <main class="content">
   <!-- Page Header -->
-  <h2 style="text-align:center; font-size:2rem; margin-top:30px; margin-bottom:30px;">Questions Section</h2>
+  <h2 class="page-header">Questions Section</h2>
 
-  <!-- Main Buttons -->
   <div class="button-container">
-    <button class="btn btn-dmo" onclick="showDMOOptions()">DMO Questions</button>
-    <button class="btn btn-pmo" onclick="showPMOOptions()">PMO Questions</button>
+    <button class="btn btn-dmo" onclick="showSection('dmo')">DMO Questions</button>
+    <button class="btn btn-pmo" disabled>PMO Questions</button>
   </div>
 
-  <!-- DMO Sub-buttons -->
-  <div id="dmo-sub-buttons" class="sub-button-container" style="display:none;">
-    <button class="btn btn-dmo" onclick="window.location.href='dmo_questions.html'">DMO - Sample Questions</button>
-    <button class="btn btn-disabled">DMO - Other Questions</button>
-  </div>
-
-  <!-- PMO Sub-buttons -->
-  <div id="pmo-sub-buttons" class="sub-button-container" style="display:none;">
-    <button class="btn btn-disabled">PMO - Sample Questions</button>
-    <button class="btn btn-disabled">PMO - Other Questions</button>
-  </div>
+  <section id="dmo" class="pdf-section active">
+    <h2>DMO Sample Questions</h2>
+    <div class="pdf-container">
+      <!-- 10 PDFs -->
+      <iframe src="https://drive.google.com/file/d/1HMT5ubnuk2V1-JhtrR5qaE1YOtST3Bk5/preview" class="pdf-frame"></iframe>
+      <iframe src="https://drive.google.com/file/d/1-_yicJJDePmZPAjSMPK-hGowiGmTefNK/preview" class="pdf-frame"></iframe>
+      <iframe src="https://drive.google.com/file/d/1lstCFZVOTJPcF0ALDhD0uzjbQPouwjQS/preview" class="pdf-frame"></iframe>
+      <iframe src="https://drive.google.com/file/d/1pntGqKa5IkeqKZVCVKCbOAa17GWx72MR/preview" class="pdf-frame"></iframe>
+      <iframe src="https://drive.google.com/file/d/1i84CHNoeLqag1WWKnYRrQzwf1aEAGWb1/preview" class="pdf-frame"></iframe>
+      <iframe src="https://drive.google.com/file/d/1u1xcxpUQQgPALR2NG9LDkny97k9JqMMj/preview" class="pdf-frame"></iframe>
+      <iframe src="https://drive.google.com/file/d/1R4-h0inXobmdrWGPAOjRYH0oJSm0_72f/preview" class="pdf-frame"></iframe>
+      <iframe src="https://drive.google.com/file/d/1VL0cypLjYIlgx9z9fncf7AOcf3IFkYrA/preview" class="pdf-frame"></iframe>
+      <iframe src="https://drive.google.com/file/d/1i3QghmkrX0ntAPc03YLkMy6bWmvgmRJN/preview" class="pdf-frame"></iframe>
+      <iframe src="https://drive.google.com/file/d/1PiG3LpZvvnY7PjY98GiV_R2_LrpDNNs-/preview" class="pdf-frame"></iframe>
+    </div>
+  </section>
 </main>
+
+<script>
+  function showSection(sectionId) {
+    document.querySelectorAll('.pdf-section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+  }
+</script>
