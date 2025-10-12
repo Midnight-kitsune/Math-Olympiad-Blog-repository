@@ -3,107 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Questions - Help for Math Olympiad</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>DMO Sample Questions</title>
+  <link rel="stylesheet" href="../styles.css">
   <style>
-    /* Sub-button container styling */
-    .sub-buttons {
-      display: none;
-      flex-direction: column;
-      gap: 15px;
-      margin: 20px 0;
-      align-items: center;
-    }
-
-    .main-buttons {
+    .pdf-list {
       display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin: 50px 0;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 800px;
+      margin: 20px auto;
     }
 
-    .main-buttons .btn, .sub-buttons .btn {
-      padding: 12px 25px;
+    .pdf-list button {
+      padding: 12px 20px;
       font-size: 16px;
-      font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
-      border: none;
-      transition: 0.3s;
       background-color: #4CAF50;
       color: white;
+      border: none;
+      transition: 0.3s;
     }
 
-    .main-buttons .btn:hover, .sub-buttons .btn:hover {
+    .pdf-list button:hover {
       background-color: #45a049;
     }
 
-    .btn-disabled {
-      background-color: #ccc;
-      color: #666;
-      cursor: not-allowed;
+    .pdf-frame {
+      width: 100%;
+      height: 600px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      margin-top: 20px;
     }
 
-    /* Center content */
-    main.content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 50px 20px;
+    @media(max-width: 768px) {
+      .pdf-frame {
+        height: 400px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="logo">Help for Math Olympiad</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="questions.html">Questions</a></li>
-      <li><a href="articles/articles.html">Articles</a></li>
-    </ul>
-  </nav>
+<nav class="navbar">
+  <div class="logo">NPLIMO-Volunteer : Prasiddha Subedi</div>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../questions.html">Questions</a></li>
+    <li><a href="articles.html">Articles</a></li>
+  </ul>
+</nav>
 
-  <main class="content">
-    <h1 style="text-align:center; margin-bottom:40px;">Select Competition</h1>
+<main class="content">
+  <h1 style="text-align:center; margin-bottom:30px;">DMO Sample Questions</h1>
 
-    <div class="main-buttons">
-      <button id="dmo-btn" class="btn">DMO</button>
-      <button id="pmo-btn" class="btn">PMO</button>
-    </div>
+  <div class="pdf-list">
+    <button onclick="openPDF(1)">Sample Questions - PDF 1</button>
+    <button onclick="openPDF(2)">Sample Questions - PDF 2</button>
+    <button onclick="openPDF(3)">Sample Questions - PDF 3</button>
+    <button onclick="openPDF(4)">Sample Questions - PDF 4</button>
+    <button onclick="openPDF(5)">Sample Questions - PDF 5</button>
+    <button onclick="openPDF(6)">Sample Questions - PDF 6</button>
+    <button onclick="openPDF(7)">Sample Questions - PDF 7</button>
+    <button onclick="openPDF(8)">Sample Questions - PDF 8</button>
+    <button onclick="openPDF(9)">Sample Questions - PDF 9</button>
+    <button onclick="openPDF(10)">Sample Questions - PDF 10</button>
+  </div>
 
-    <!-- DMO sub-buttons -->
-    <div id="dmo-sub-buttons" class="sub-buttons">
-      <button onclick="window.location.href='dmo_questions.html'">Sample Questions</button>
-      <button class="btn-disabled" disabled>Other Questions</button>
-    </div>
+  <iframe id="pdf-frame" class="pdf-frame" src=""></iframe>
 
-    <!-- PMO sub-buttons -->
-    <div id="pmo-sub-buttons" class="sub-buttons">
-      <button class="btn-disabled" disabled>Model Questions</button>
-      <button class="btn-disabled" disabled>Extra Questions</button>
-    </div>
+</main>
 
-  </main>
+<script>
+  const pdfLinks = [
+    "https://drive.google.com/file/d/1HMT5ubnuk2V1-JhtrR5qaE1YOtST3Bk5/preview",
+    "https://drive.google.com/file/d/1-_yicJJDePmZPAjSMPK-hGowiGmTefNK/preview",
+    "https://drive.google.com/file/d/1lstCFZVOTJPcF0ALDhD0uzjbQPouwjQS/preview",
+    "https://drive.google.com/file/d/1pntGqKa5IkeqKZVCVKCbOAa17GWx72MR/preview",
+    "https://drive.google.com/file/d/1i84CHNoeLqag1WWKnYRrQzwf1aEAGWb1/preview",
+    "https://drive.google.com/file/d/1u1xcxpUQQgPALR2NG9LDkny97k9JqMMj/preview",
+    "https://drive.google.com/file/d/1R4-h0inXobmdrWGPAOjRYH0oJSm0_72f/preview",
+    "https://drive.google.com/file/d/1VL0cypLjYIlgx9z9fncf7AOcf3IFkYrA/preview",
+    "https://drive.google.com/file/d/1i3QghmkrX0ntAPc03YLkMy6bWmvgmRJN/preview",
+    "https://drive.google.com/file/d/1PiG3LpZvvnY7PjY98GiV_R2_LrpDNNs-/preview"
+  ];
 
-  <script>
-    const dmoBtn = document.getElementById('dmo-btn');
-    const pmoBtn = document.getElementById('pmo-btn');
-    const dmoSub = document.getElementById('dmo-sub-buttons');
-    const pmoSub = document.getElementById('pmo-sub-buttons');
-
-    dmoBtn.addEventListener('click', () => {
-      dmoSub.style.display = 'flex';
-      pmoSub.style.display = 'none';
-    });
-
-    pmoBtn.addEventListener('click', () => {
-      pmoSub.style.display = 'flex';
-      dmoSub.style.display = 'none';
-    });
-  </script>
+  function openPDF(index) {
+    const frame = document.getElementById('pdf-frame');
+    frame.src = pdfLinks[index-1];
+    frame.scrollIntoView({behavior: "smooth"});
+  }
+</script>
 
 </body>
 </html>
