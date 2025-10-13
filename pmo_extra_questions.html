@@ -1,409 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Practice for PMO — Extra Questions</title>
-<link rel="stylesheet" href="styles.css">
-<!-- MathJax for rendering math/LaTeX nicely -->
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<style>
-  /* Minimal page-local styles to match your site's look */
-  body{font-family: "Poppins", Arial, sans-serif; background:#f6fbf6; color:#222; margin:0;}
-  .navbar{display:flex;align-items:center;justify-content:space-between;background:#2c3e50;color:white;padding:12px 18px;}
-  .nav-links{display:flex;gap:14px;align-items:center}
-  .nav-links a{color:white;text-decoration:none;font-weight:600}
-  .container{max-width:980px;margin:24px auto;padding:0 16px}
-  h1{font-size:1.9rem;margin:8px 0 6px;color:#1f3760;text-align:center}
-  .notice{display:block;margin:12px auto 18px;font-weight:800;color:#0b6b2b;background:#e9fff0;border:1px solid #bff0c9;padding:10px;border-radius:10px;max-width:760px;text-align:center}
-  #signin-area{text-align:center;margin-bottom:12px}
-  .sign-btn{background:#1877f2;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-weight:700;cursor:pointer}
-  .topic-grid{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:18px}
-  .topic-btn{background:#1abc9c;color:white;border:none;padding:14px 22px;border-radius:10px;font-size:17px;cursor:pointer;min-width:180px;font-weight:700;box-shadow:0 3px 8px rgba(0,0,0,0.08)}
-  .topic-btn:hover{transform:translateY(-2px)}
-  #back-arrow{display:none;cursor:pointer;font-size:28px;color:#1abc9c;margin:12px auto;transition:transform .15s}
-  #back-arrow:active{transform:scale(.98)}
-  .question-card{background:#fff;border-radius:10px;padding:18px;margin-top:14px;box-shadow:0 6px 20px rgba(30,30,30,0.06);max-width:900px;margin-left:auto;margin-right:auto}
-  .q-text{font-size:1.1rem;line-height:1.6;margin-bottom:12px}
-  .hint-box{background:#fffbe6;border:1px solid #ffe8a8;padding:10px;border-radius:8px;margin-top:10px;display:none}
-  .controls{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;justify-content:center}
-  .control-btn{background:#0a66c2;color:#fff;border:none;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer}
-  .control-btn.secondary{background:#95a5a6}
-  .answer-input{width:100%;max-width:520px;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px}
-  .status{margin-top:12px;font-weight:700;text-align:center}
-  .muted{color:#666;font-size:0.95rem;margin-top:10px;text-align:center}
-  .done-msg{background:#e6fff0;border:1px solid #bff0c9;padding:10px;border-radius:8px;margin-top:12px;text-align:center}
-  .redo-btn{background:#ff7b00;color:white;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:800}
-  @media(max-width:640px){
-    .topic-btn{min-width:140px;padding:12px 16px;font-size:15px}
-    h1{font-size:1.6rem}
-    #back-arrow{font-size:26px}
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practise for PMO - Help for Math Olympiad</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body { font-family: Arial, sans-serif; background-color:#f0f0f0; color:#333; margin:0; padding:0;}
+    .navbar { display:flex; justify-content:space-between; align-items:center; background:#2c3e50; padding:15px 25px;}
+    .navbar .logo { color:#fff; font-weight:bold; font-size:20px;}
+    .navbar .nav-links { display:flex; gap:15px; list-style:none; }
+    .navbar .nav-links li a { color:#fff; text-decoration:none; font-weight:500;}
+    .navbar .nav-links li a:hover { color:#ffd700;}
+    .content { text-align:center; padding:50px 20px; max-width:900px; margin:auto;}
+    .btn { padding:12px 25px; margin:10px; font-size:18px; font-weight:bold; border:none; border-radius:8px; cursor:pointer; }
+    .btn-cat { background-color:#4CAF50; color:white;}
+    .btn-cat:hover { background-color:#45a049;}
+    .btn-back { font-size:20px; padding:8px 15px; cursor:pointer; margin:20px auto; display:none;}
+    #signin-msg { font-weight:bold; color:#333; margin:20px 0; }
+    #question-container { margin-top:30px; display:none; text-align:left; }
+    #question-container h2 { font-size:22px; margin-bottom:15px; }
+    #answer-section { margin-top:15px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    #feedback { font-weight:bold; margin-left:15px; }
+    #hint { color:#555; margin-top:10px; display:none; font-style:italic;}
+    input[type="text"] { padding:8px 10px; font-size:16px; border-radius:5px; border:1px solid #ccc; width:200px;}
+    @media(max-width:768px){ input[type="text"]{ width:100%; } }
+  </style>
 </head>
 <body>
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="logo">Help for Math Olympiad</div>
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="questions.html">Questions</a>
-      <a href="articles/articles.html">Articles</a>
-    </div>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../questions.html">Questions</a></li>
+      <li><a href="articles.html">Articles</a></li>
+    </ul>
   </nav>
 
-  <div class="container">
-    <h1>Practice for PMO</h1>
+  <main class="content">
+    <h1>Practise for PMO</h1>
+    <div id="signin-msg">Sign in/up with Google to save progress (optional)</div>
+    <!-- Google Sign-in button placeholder -->
+    <div id="google-signin"><button class="btn btn-cat">Sign in with Google</button></div>
 
-    <!-- Bold sign-in notice -->
-    <div class="notice"><strong>Sign in / up with Google to save progress</strong></div>
-
-    <!-- Sign-in placeholder (optional). Real Google sign-in can be integrated later. -->
-    <div id="signin-area">
-      <button class="sign-btn" id="sign-in-btn">Sign in with Google (optional)</button>
-      <div class="muted" style="margin-top:8px;">Signing in is optional. Progress is saved locally automatically. I will explain Google sign-in setup later.</div>
+    <!-- Category Buttons -->
+    <div id="categories">
+      <button class="btn btn-cat" onclick="selectCategory('NT')">Number Theory</button>
+      <button class="btn btn-cat" onclick="selectCategory('Geo')">Geometry</button>
+      <button class="btn btn-cat" onclick="selectCategory('Combi')">Combinatorics</button>
+      <button class="btn btn-cat" onclick="selectCategory('Alg')">Algebra</button>
+      <button class="btn btn-cat" onclick="selectCategory('Mixed')">Mixed</button>
     </div>
 
-    <!-- Topic selection -->
-    <div id="topic-area">
-      <div class="topic-grid" id="topic-grid">
-        <button class="topic-btn" data-topic="Number Theory">Number Theory</button>
-        <button class="topic-btn" data-topic="Geometry">Geometry</button>
-        <button class="topic-btn" data-topic="Combinatorics">Combinatorics</button>
-        <button class="topic-btn" data-topic="Algebra">Algebra</button>
-        <button class="topic-btn" data-topic="Mixed">Mixed</button>
+    <!-- Back Button -->
+    <button id="back-btn" class="btn-back" onclick="goBack()">← Back to categories</button>
+
+    <!-- Question Container -->
+    <div id="question-container">
+      <h2 id="question-text"></h2>
+      <div id="hint"></div>
+      <div id="answer-section">
+        <input type="text" id="user-answer" placeholder="Type your answer here"/>
+        <button class="btn btn-cat" onclick="checkAnswer()">Submit</button>
+        <button class="btn btn-cat" onclick="showHint()">Hint</button>
+        <button class="btn btn-cat" onclick="skipQuestion()">Skip</button>
+        <span id="feedback"></span>
       </div>
     </div>
+  </main>
 
-    <!-- Back arrow -->
-    <div id="back-arrow" title="Back to topics">⟵ Back</div>
+  <script>
+    const categories = {
+      'NT': [
+        {q: "The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a:["7","seven"], hint:"What happens if b =1 ? if b =2 ? 3,4?"},
+        {q:"A palindrome is a number that reads the same if you read it left to right or from right to left. A palindrome between 1000 and 10,000 is chosen at random. What is the probability that it is divisible by 7?", a:["1/5"], hint:"We can rewrite our palindrome as a · 103 +b · 102 +b · 101 +a · 100. This is equivalent to 1001a+ 110b."},
+        {q:"The base-nine representation of the number N is 27,006,000,052_(nine). What is the remainder when N is divided by 5?", a:["3"], hint:"Convert number into base 10."}
+      ],
+      'Combi': [
+        {q:"How many ways are there to rearrange the letters of the word SYNONYMS?", a:["5040","7!"], hint:"Have you learned the formula yet?"},
+        {q:"How many four-digit positive integers have at least one digit that is a 2 or a 3?", a:["5416"], hint:"Complementary counting."},
+        {q:"Find the number of subsets of {1,2,3,4,5,6,7,8} that are subsets of neither {1,2,3,4,5} nor {4,5,6,7,8}.", a:["196"], hint:"Complementary counting."}
+      ],
+      'Geo': [
+        {q:"Let 4ABC be an isosceles triangle with BC = AC and ∠ACB = 40°. Construct the circle with diameter BC, and let D and E be the other intersection points of the circle with the sides AC and AB, respectively. Let F be the intersection of the diagonals of the quadrilateral BCDE. What is the degree measure of ∠BFC?", a:["110"], hint:"Always make diagram in geometry questions."}
+      ],
+      'Alg': [
+        {q:"Let P(x) = x³ + x² - 2x + 2020 be a polynomial with roots r, s, t. What is P(1)?", a:["-4038","(-4038)"], hint:"Use Vieta's theorem."}
+      ],
+      'Mixed': []
+    };
 
-    <!-- Question card area -->
-    <div id="question-wrap"></div>
+    // Fill Mixed category with all questions
+    categories['Mixed'] = [].concat(categories['NT'], categories['Combi'], categories['Geo'], categories['Alg']);
 
-  </div>
+    let currentCategory = '';
+    let availableQuestions = [];
+    let currentQuestionIndex = -1;
 
-<script>
-/* ============================
-  QUESTIONS DATA (you provided)
-  Add more questions here when needed.
-   Each question:
-   { id: STRING_UNIQUE, q: "text (can include LaTeX)", answer: "primary answer string", hint: "hint text" }
-  NOTE: IDs must be unique across topics.
-   ============================ */
-
-const QUESTIONS = {
-  "Number Theory": [
-    { id: "NT1", q: `The acute angles of a right triangle are $a$ and $b$, where $a>b$ and both $a$ and $b$ are prime numbers. What is the least possible value of $b$?`, 
-      answer: "7", hint: "What happens if $b=1$? If $b=2$? 3, 4?" },
-    { id: "NT2", q: `A palindrome between $1000$ and $10000$ is chosen at random. What is the probability that it is divisible by $7$?`,
-      answer: "1/5", hint: `We can rewrite a 4-digit palindrome as $a\\cdot10^3 + b\\cdot10^2 + b\\cdot10 + a = 1001a + 110b$.` },
-    { id: "NT3", q: `The base-nine representation of the number $N$ is $27,006,000,052_{(9)}$. What is the remainder when $N$ is divided by $5$?`,
-      answer: "3", hint: "Convert the number into base 10 and reduce modulo 5 (use place values)." }
-  ],
-  "Combinatorics": [
-    { id: "C1", q: `How many ways are there to rearrange the letters of the word \\textbf{SYNONYMS}?`, answer: "5040", hint: "Use factorials and account for repeated letters." },
-    { id: "C2", q: `How many four-digit positive integers have at least one digit that is a 2 or a 3?`, answer: "5416", hint: "Use complementary counting: count numbers with no 2 or 3, subtract from total." },
-    { id: "C3", q: `Find the number of subsets of \\{1,2,3,4,5,6,7,8\\} that are subsets of neither \\{1,2,3,4,5\\} nor \\{4,5,6,7,8\\}.`, answer: "196", hint: "Use complementary counting again." }
-  ],
-  "Geometry": [
-    { id: "G1", q: `Let $\\triangle ABC$ be isosceles with $BC=AC$ and $\\angle ACB=40^\\circ$. Construct the circle with diameter $BC$, and let $D,E$ be the other intersections of that circle with $AC$ and $AB$ respectively. Let $F$ be the intersection of diagonals of quadrilateral $BCDE$. What is $\\angle BFC$ (in degrees)?`, answer: "110", hint: "Draw an accurate diagram — angles in circles and isosceles triangle facts help." }
-  ],
-  "Algebra": [
-    { id: "A1", q: `Let $P(x)=x^3 + x^2 + r^2 x + 2020$ be a polynomial with roots $r,s,t$. What is $P(1)$?`, answer: "-4038", hint: "Use Vieta's formulas (evaluate P(1) directly or use relations from roots)." }
-  ]
-};
-
-/* Flatten all ids helper */
-function allQuestionsList(){
-  const res = [];
-  for(const k of Object.keys(QUESTIONS)) QUESTIONS[k].forEach(q=>res.push({...q, topic:k}));
-  return res;
-}
-
-/* ------------------------------
-   Progress storage
-   Uses localStorage to save per-topic completed question IDs.
-   Keys: "pmo_done_[topic]" => JSON array of ids
-   If user signs-in later, you can sync to Firebase.
-   ------------------------------ */
-function getDoneSet(topic){
-  try{
-    const raw = localStorage.getItem("pmo_done_"+topic);
-    return raw ? new Set(JSON.parse(raw)) : new Set();
-  }catch(e){ return new Set(); }
-}
-function saveDoneSet(topic, setObj){
-  try{
-    const arr = Array.from(setObj);
-    localStorage.setItem("pmo_done_"+topic, JSON.stringify(arr));
-  }catch(e){}
-}
-function resetDoneSet(topic){
-  localStorage.removeItem("pmo_done_"+topic);
-}
-
-/* ------------------------------
-  Utility: normalize answers
-  Accepts numbers like "7", "seven", "1/5", "0.2", latex-ish "1/5", etc.
-  Strategy:
-   - Trim, lowercase
-   - Replace unicode minus, etc.
-   - Try to parse numeric value (fractions, decimals); if both parse to numbers compare numeric tolerance
-   - Also accept word numbers for small numbers (one..twenty)
-   - Fallback string equality after removing spaces and punctuation.
-  ------------------------------ */
-
-const WORDS_TO_NUM = {
-  "zero":0,"one":1,"two":2,"three":3,"four":4,"five":5,"six":6,"seven":7,"eight":8,"nine":9,"ten":10,
-  "eleven":11,"twelve":12,"thirteen":13,"fourteen":14,"fifteen":15,"sixteen":16,"seventeen":17,"eighteen":18,"nineteen":19,"twenty":20
-};
-
-function tryParseNumber(s){
-  if(!s) return null;
-  s = s.trim().toLowerCase();
-  s = s.replace(/−/g,'-'); // unicode minus
-  // if fraction like "1/5"
-  const fracMatch = s.match(/^(-?\d+)\s*\/\s*(-?\d+)$/);
-  if(fracMatch){
-    const a = Number(fracMatch[1]), b = Number(fracMatch[2]);
-    if(b===0) return null;
-    return a / b;
-  }
-  // remove surrounding $ or \( \)
-  s = s.replace(/^\$+|^\(+|^\[+|\\\(+|\\\)+/g,'').replace(/\$+$|\)+$|\]+$/g,'');
-  // if word number
-  if(WORDS_TO_NUM.hasOwnProperty(s)) return WORDS_TO_NUM[s];
-  // if simple numeric
-  const n = Number(s);
-  if(!Number.isNaN(n)) return n;
-  // some latex fractions like \frac{1}{5}
-  const fracLatex = s.match(/\\frac\s*\{\s*([0-9]+)\s*\}\s*\{\s*([0-9]+)\s*\}/);
-  if(fracLatex){
-    return Number(fracLatex[1]) / Number(fracLatex[2]);
-  }
-  return null;
-}
-
-function normalizeString(s){
-  if(!s) return "";
-  return s.replace(/\s+/g,' ').trim().toLowerCase().replace(/[.,;:!?"()]/g,'');
-}
-
-function answersMatch(given, expected){
-  if(given==null || expected==null) return false;
-  const g = String(given).trim();
-  const e = String(expected).trim();
-  // try numeric comparison
-  const gn = tryParseNumber(g);
-  const en = tryParseNumber(e);
-  if(gn!==null && en!==null){
-    // numeric tolerant comparison
-    return Math.abs(gn - en) < 1e-6;
-  }
-  // fallback: normalize strings and compare
-  if(normalizeString(g) === normalizeString(e)) return true;
-  // also accept different representations: e.g "1/5" and "0.2"
-  if(gn!==null && normalizeString(e) === String(en)) return Math.abs(gn-en) < 1e-6;
-  return false;
-}
-
-/* ------------------------------
-  App state
-  ------------------------------ */
-let currentTopic = null;
-let currentQuestion = null;
-let doneSet = new Set(); // for current topic
-let mixedDoneGlobal = new Set(); // union of done across topics (used when Mixed selected)
-
-/* ------------------------------
-  DOM references
-  ------------------------------ */
-const topicGrid = document.getElementById('topic-grid');
-const backArrow = document.getElementById('back-arrow');
-const questionWrap = document.getElementById('question-wrap');
-const signBtn = document.getElementById('sign-in-btn');
-
-/* Sign-in placeholder action */
-signBtn.addEventListener('click', ()=> {
-  alert("Sign in with Google is optional and not set up here yet.\n\nProgress is saved locally on this device. If you want Google sign-in later I can help you integrate Firebase Authentication to save progress online.");
-});
-
-/* Topic selection handler */
-topicGrid.addEventListener('click', (ev)=>{
-  const btn = ev.target.closest('button[data-topic]');
-  if(!btn) return;
-  const topic = btn.dataset.topic;
-  openTopic(topic);
-});
-
-backArrow.addEventListener('click', ()=>{
-  // go back to topic selection
-  currentTopic = null;
-  currentQuestion = null;
-  questionWrap.innerHTML = '';
-  backArrow.style.display = 'none';
-  document.getElementById('topic-area').style.display = 'block';
-});
-
-/* Helper: pick random remaining question for topic */
-function pickRandomQuestionForTopic(topic){
-  const pool = [];
-  if(topic === "Mixed"){
-    // all questions across topics except done
-    const all = allQuestionsList();
-    for(const q of all){
-      // check whether this q is done in its topic
-      const done = getDoneSet(q.topic);
-      if(!done.has(q.id)) pool.push(q);
+    function selectCategory(cat) {
+      currentCategory = cat;
+      availableQuestions = [...categories[cat]];
+      currentQuestionIndex = -1;
+      document.getElementById('categories').style.display = 'none';
+      document.getElementById('back-btn').style.display = 'block';
+      nextQuestion();
     }
-  } else {
-    const list = QUESTIONS[topic] || [];
-    const done = getDoneSet(topic);
-    for(const q of list){
-      if(!done.has(q.id)) pool.push(q);
+
+    function goBack() {
+      document.getElementById('question-container').style.display = 'none';
+      document.getElementById('back-btn').style.display = 'none';
+      document.getElementById('categories').style.display = 'block';
+      document.getElementById('feedback').innerText = '';
+      document.getElementById('hint').style.display='none';
     }
-  }
-  if(pool.length === 0) return null;
-  // pick random
-  const i = Math.floor(Math.random() * pool.length);
-  return pool[i];
-}
 
-/* Render a question view */
-function renderQuestion(qObj){
-  currentQuestion = qObj;
-  questionWrap.innerHTML = '';
-  document.getElementById('topic-area').style.display = 'none';
-  backArrow.style.display = 'block';
-
-  const card = document.createElement('div'); card.className = 'question-card';
-  const qElem = document.createElement('div'); qElem.className = 'q-text';
-  qElem.innerHTML = `<strong>Topic:</strong> ${qObj.topic} <br><div style="margin-top:8px">${qObj.q}</div>`;
-  card.appendChild(qElem);
-
-  // answer input area
-  const input = document.createElement('input');
-  input.className = 'answer-input';
-  input.placeholder = 'Type your answer here (e.g. 7 or 1/5 or -4038)';
-  input.setAttribute('aria-label','Answer input');
-  card.appendChild(input);
-
-  // controls
-  const controls = document.createElement('div'); controls.className = 'controls';
-  const submit = document.createElement('button'); submit.className='control-btn'; submit.textContent='Submit';
-  const hint = document.createElement('button'); hint.className='control-btn secondary'; hint.textContent='Hint';
-  const skip = document.createElement('button'); skip.className='control-btn secondary'; skip.textContent='Skip';
-  controls.append(submit,hint,skip);
-  card.appendChild(controls);
-
-  // hint box
-  const hintBox = document.createElement('div'); hintBox.className='hint-box'; hintBox.innerHTML = `<strong>Hint:</strong> ${qObj.hint}`;
-  card.appendChild(hintBox);
-
-  // status area
-  const status = document.createElement('div'); status.className='status'; card.appendChild(status);
-
-  // append
-  questionWrap.appendChild(card);
-  MathJax.typesetPromise && MathJax.typesetPromise(); // render math if present
-
-  // submit handler
-  submit.addEventListener('click', ()=>{
-    const userAns = input.value.trim();
-    if(userAns === ''){
-      status.textContent = "Please type your answer (or press Skip).";
-      status.style.color = '#b03a2e';
-      return;
+    function nextQuestion() {
+      if(availableQuestions.length === 0){
+        document.getElementById('question-container').style.display = 'block';
+        document.getElementById('question-text').innerText = "All questions in this category are finished.";
+        document.getElementById('answer-section').style.display = 'none';
+        document.getElementById('hint').style.display = 'none';
+        return;
+      }
+      currentQuestionIndex = Math.floor(Math.random()*availableQuestions.length);
+      let qObj = availableQuestions[currentQuestionIndex];
+      document.getElementById('question-container').style.display = 'block';
+      document.getElementById('question-text').innerText = qObj.q;
+      document.getElementById('user-answer').value = '';
+      document.getElementById('feedback').innerText = '';
+      document.getElementById('hint').style.display='none';
+      document.getElementById('answer-section').style.display = 'flex';
     }
-    // check correctness
-    if(answersMatch(userAns, qObj.answer)){
-      // mark done for that topic
-      const topic = qObj.topic;
-      const done = getDoneSet(topic);
-      done.add(qObj.id);
-      saveDoneSet(topic, done);
-      status.style.color = '#0b6b2b';
-      status.textContent = "✅ Correct! Good job.";
-      // after 3 seconds get next random question for same topic (or Mixed logic)
-      setTimeout(()=>{
-        const next = pickRandomQuestionForTopic(currentTopic);
-        if(next){
-          renderQuestion(next);
-        } else {
-          showAllDoneMessage(currentTopic);
-        }
-      }, 3000);
-    } else {
-      status.style.color = '#b03a2e';
-      status.textContent = "Try again.";
+
+    function checkAnswer() {
+      let userAns = document.getElementById('user-answer').value.trim().toLowerCase();
+      let qObj = availableQuestions[currentQuestionIndex];
+      if(qObj.a.some(a => a.toLowerCase() === userAns)){
+        document.getElementById('feedback').innerText = "✅ Correct!";
+        availableQuestions.splice(currentQuestionIndex,1);
+        setTimeout(nextQuestion,3000);
+      } else {
+        document.getElementById('feedback').innerText = "❌ Try again!";
+      }
     }
-  });
 
-  // hint handler
-  hint.addEventListener('click', ()=>{
-    hintBox.style.display = 'block';
-  });
-
-  // skip handler (skip does not mark done, but picks another question)
-  skip.addEventListener('click', ()=>{
-    const next = pickRandomQuestionForTopic(currentTopic);
-    if(next){
-      renderQuestion(next);
-    } else {
-      showAllDoneMessage(currentTopic);
+    function showHint() {
+      let qObj = availableQuestions[currentQuestionIndex];
+      document.getElementById('hint').innerText = "💡 Hint: " + qObj.hint;
+      document.getElementById('hint').style.display='block';
     }
-  });
-}
 
-/* Show message when all done */
-function showAllDoneMessage(topic){
-  questionWrap.innerHTML = '';
-  backArrow.style.display = 'block';
-  const card = document.createElement('div'); card.className='question-card';
-  card.innerHTML = `<div class="done-msg"><strong>All questions available are finished.</strong><div style="margin-top:8px">Maybe choose another category or re-do the questions.</div></div>`;
-  const redo = document.createElement('div'); redo.style.marginTop='12px'; redo.style.textAlign='center';
-  const redoBtn = document.createElement('button'); redoBtn.className='redo-btn'; redoBtn.textContent='Re-do All';
-  redo.appendChild(redoBtn);
-  card.appendChild(redo);
-  questionWrap.appendChild(card);
-
-  redoBtn.addEventListener('click', ()=>{
-    // reset done set for this topic (or for all if Mixed)
-    if(topic === "Mixed"){
-      // reset all per-topic sets
-      for(const k of Object.keys(QUESTIONS)) resetDoneSet(k);
-    } else {
-      resetDoneSet(topic);
+    function skipQuestion() {
+      nextQuestion();
     }
-    // refresh: pick random and show
-    const next = pickRandomQuestionForTopic(topic);
-    if(next) renderQuestion(next);
-    else {
-      // just show topic selection if weird
-      backArrow.click();
-    }
-  });
-}
 
-/* Open topic */
-function openTopic(topic){
-  currentTopic = topic;
-  // load done set for topic and also build mixedDoneGlobal
-  doneSet = getDoneSet(topic);
-  // show a random question
-  const q = pickRandomQuestionForTopic(topic);
-  if(q){
-    renderQuestion(q);
-  } else {
-    showAllDoneMessage(topic);
-  }
-}
-
-/* Preserve MathJax rendering on dynamic inserts too */
-/* (we call MathJax.typesetPromise after injecting)  */
-
-/* optional: on load you may display counts, but not required */
-
-</script>
+  </script>
 </body>
 </html>
