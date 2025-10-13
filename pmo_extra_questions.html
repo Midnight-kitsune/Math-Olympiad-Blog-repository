@@ -1,122 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PMO Practice</title>
+  <meta charset="UTF-8">
+  <title>PMO Practise</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 0;
-    }
-    h1 { margin-top: 20px; }
-    .btn {
-      padding: 10px 20px;
-      margin: 8px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #007bff;
-      color: white;
-      font-size: 16px;
-    }
-    .btn:hover { background: #0056b3; }
-    .btn-cat { display: inline-block; width: 200px; }
-    #question-container {
-      display: none;
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    #answer-section {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
-    }
-    input[type="text"] {
-      padding: 8px;
-      width: 80%;
-      font-size: 16px;
-    }
-    #hint {
-      display: none;
-      margin-top: 10px;
-      color: #444;
-    }
-    #progress-container {
-      width: 80%;
-      margin: 10px auto;
-      background: #e0e0e0;
-      border-radius: 10px;
-      height: 20px;
-      overflow: hidden;
-    }
-    #progress-bar {
-      background: #28a745;
-      color: white;
-      text-align: center;
-      height: 100%;
-      width: 0%;
-      transition: width 0.4s;
-    }
-    #back-btn, #redo-btn, #reset-btn {
-      margin: 10px;
-      background: #6c757d;
-    }
-    #reset-btn { background: #dc3545; }
+    body { font-family: Arial, sans-serif; text-align: center; background:#f9f9f9; }
+    h1 { color: #333; }
+    .btn { padding: 10px 20px; margin: 10px; cursor: pointer; border: none; border-radius: 8px; }
+    .btn-cat { background-color: #007bff; color: white; }
+    .btn-cat:hover { background-color: #0056b3; }
+    #question-container { margin-top: 30px; }
+    #hint { color: #666; display:none; margin-top: 10px; }
+    #feedback { margin-top: 10px; font-weight: bold; }
+    #answer-section { margin-top: 15px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+    #progress-bar { width: 80%; margin: 10px auto; background: #ddd; border-radius: 10px; overflow:hidden; }
+    .progress { height: 10px; background: #4caf50; width: 0%; }
   </style>
 </head>
 <body>
 
   <main class="content">
-    <h1>PMO Practice</h1>
-    <div id="signin-msg"><strong>Sign in/up with Google to save progress (optional)</strong></div>
-    <div style="margin-bottom:20px;">
+    <h1>Practise for PMO</h1>
+
+    <div id="signin-msg">Sign in/up with Google to save progress (optional)</div>
+    <div style="margin-bottom:30px;">
       <button id="google-signin-btn" class="btn btn-cat">Sign in with Google</button>
       <button id="google-signout-btn" class="btn btn-cat" style="display:none;">Sign out</button>
     </div>
     <div id="user-info" style="margin-bottom:20px;"></div>
 
-    <!-- Category Buttons -->
     <div id="categories">
       <button class="btn btn-cat" onclick="selectCategory('NT')">Number Theory</button>
-      <button class="btn btn-cat" onclick="selectCategory('Combi')">Combinatorics</button>
       <button class="btn btn-cat" onclick="selectCategory('Geo')">Geometry</button>
+      <button class="btn btn-cat" onclick="selectCategory('Combi')">Combinatorics</button>
       <button class="btn btn-cat" onclick="selectCategory('Alg')">Algebra</button>
       <button class="btn btn-cat" onclick="selectCategory('Mixed')">Mixed</button>
-      <br>
-      <button id="reset-btn" class="btn" onclick="resetProgress()">Reset Progress</button>
+      <button class="btn btn-cat" onclick="resetAllProgress()">Reset All Progress</button>
     </div>
 
-    <!-- Question Container -->
-    <div id="question-container">
-      <div id="progress-container">
-        <div id="progress-bar">0%</div>
-      </div>
-      <p id="question-text"></p>
+    <div id="question-container" style="display:none;">
+      <h2 id="question-text"></h2>
       <div id="answer-section">
-        <input type="text" id="user-answer" placeholder="Type your answer..." />
-        <button class="btn" onclick="checkAnswer()">Submit</button>
-        <button class="btn" onclick="showHint()">Hint</button>
-        <button class="btn" onclick="skipQuestion()">Skip</button>
+        <input id="user-answer" type="text" placeholder="Type your answer here">
+        <button class="btn btn-cat" onclick="checkAnswer()">Submit</button>
+        <button class="btn btn-cat" onclick="showHint()">Hint</button>
+        <button class="btn btn-cat" onclick="skipQuestion()">Skip</button>
       </div>
-      <div id="feedback" style="margin-top:10px;font-weight:bold;"></div>
+      <div id="feedback"></div>
       <div id="hint"></div>
-      <br>
-      <button id="back-btn" class="btn" onclick="goBack()" style="display:none;">← Back to Categories</button>
-      <button id="redo-btn" class="btn" onclick="redoCategory()" style="display:none;">Redo Category</button>
+      <div id="progress-bar"><div class="progress" id="progress"></div></div>
+      <button id="back-btn" class="btn btn-cat" style="display:none;" onclick="goBack()">Back to Categories</button>
     </div>
   </main>
 
-  <!-- FIREBASE + LOGIC -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
@@ -133,14 +69,13 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    getAnalytics(app);
     const auth = getAuth(app);
 
     const signInBtn = document.getElementById("google-signin-btn");
     const signOutBtn = document.getElementById("google-signout-btn");
     const userInfo = document.getElementById("user-info");
 
-    // Sign In
     signInBtn.addEventListener("click", async () => {
       const provider = new GoogleAuthProvider();
       try {
@@ -149,12 +84,9 @@
         userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
         signInBtn.style.display = "none";
         signOutBtn.style.display = "inline-block";
-      } catch (error) {
-        alert("Sign-in failed: " + error.message);
-      }
+      } catch (error) { alert("Sign-in failed: " + error.message); }
     });
 
-    // Sign Out
     signOutBtn.addEventListener("click", async () => {
       await signOut(auth);
       userInfo.innerHTML = "";
@@ -162,7 +94,6 @@
       signOutBtn.style.display = "none";
     });
 
-    // Auth Change
     onAuthStateChanged(auth, (user) => {
       if (user) {
         userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
@@ -175,137 +106,113 @@
       }
     });
 
-    // Question Categories
+    // ✅ Questions
     const categories = {
-      NT: [
-        { q: "The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a: ["7", "seven"], hint: "What happens if b=1,2,3,4?" },
-        { q: "A palindrome between 1000 and 10,000 is chosen at random. What is the probability that it is divisible by 7?", a: ["1/5"], hint: "Rewrite as 1001a + 110b." },
-        { q: "The base-nine representation of N is 27,006,000,052₉. What is the remainder when N is divided by 5?", a: ["3"], hint: "Convert to base 10." }
+      'NT': [
+        {q:"The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a:["7","seven"], hint:"What happens if b=1,2,3,4?"},
+        {q:"A palindrome between 1000 and 10,000 is chosen at random. What is the probability that it is divisible by 7?", a:["1/5"], hint:"Rewrite as 1001a + 110b."},
+        {q:"Base-nine number N = 27,006,000,052₉. Remainder when divided by 5?", a:["3"], hint:"Convert to base 10."}
       ],
-      Combi: [
-        { q: "How many ways are there to rearrange the letters of the word SYNONYMS?", a: ["5040", "7!"], hint: "Use factorial formula." },
-        { q: "How many four-digit integers have at least one digit that is a 2 or 3?", a: ["5416"], hint: "Complementary counting." },
-        { q: "Find the number of subsets of {1,2,3,4,5,6,7,8} that are subsets of neither {1,2,3,4,5} nor {4,5,6,7,8}.", a: ["196"], hint: "Complementary counting." }
+      'Combi': [
+        {q:"How many ways to rearrange SYNONYMS?", a:["5040","7!"], hint:"Use factorial."},
+        {q:"How many 4-digit numbers have at least one digit that is 2 or 3?", a:["5416"], hint:"Use complement."},
+        {q:"How many subsets of {1,...,8} are subsets of neither {1..5} nor {4..8}?", a:["196"], hint:"Complementary counting."}
       ],
-      Geo: [
-        { q: "Let △ABC be isosceles with BC=AC and ∠ACB=40°. Construct circle with diameter BC; find ∠BFC.", a: ["110"], hint: "Draw diagram." }
+      'Geo': [
+        {q:"△ABC is isosceles with BC=AC, ∠ACB=40°. Circle with diameter BC meets AC, AB at D,E. ∠BFC=?", a:["110"], hint:"Draw diagram."}
       ],
-      Alg: [
-        { q: "Let P(x) = x³ + x² - 2x + 2020 with roots r,s,t. Find P(1).", a: ["-4038", "(-4038)"], hint: "Use Vieta's theorem." }
+      'Alg': [
+        {q:"P(x)=x³+x²−2x+2020 with roots r,s,t. Find P(1).", a:["-4038"], hint:"Use Vieta’s theorem."}
       ]
     };
-    categories.Mixed = [].concat(categories.NT, categories.Combi, categories.Geo, categories.Alg);
+    categories['Mixed'] = [].concat(categories['NT'], categories['Combi'], categories['Geo'], categories['Alg']);
 
-    let currentCategory = "";
+    let currentCategory = '';
     let availableQuestions = [];
     let currentQuestionIndex = -1;
 
-    // Save progress
     function saveProgress() {
-      const key = `pmo_done_${currentCategory}`;
-      const done = categories[currentCategory].filter(q => !availableQuestions.some(av => av.q === q.q));
+      const key = `pmo_progress_${currentCategory}`;
+      const done = categories[currentCategory].filter(q => !availableQuestions.includes(q));
       localStorage.setItem(key, JSON.stringify(done));
     }
 
-    // Load progress
     function loadProgress(cat) {
-      const key = `pmo_done_${cat}`;
+      const key = `pmo_progress_${cat}`;
       const done = JSON.parse(localStorage.getItem(key)) || [];
-      return categories[cat].filter(q => !done.some(d => d.q === q.q));
+      return categories[cat].filter(q => !done.some(dq => dq.q === q.q));
     }
 
-    // Progress bar update
-    function updateProgressBar() {
-      const total = categories[currentCategory].length;
-      const doneCount = categories[currentCategory].length - availableQuestions.length;
-      const percent = Math.round((doneCount / total) * 100);
-      const bar = document.getElementById("progress-bar");
-      bar.style.width = percent + "%";
-      bar.innerText = percent + "%";
-    }
-
-    // Reset all progress
-    window.resetProgress = function() {
-      Object.keys(categories).forEach(cat => {
-        localStorage.removeItem(`pmo_done_${cat}`);
-      });
-      alert("Progress reset!");
-      updateProgressBar();
-    };
-
-    // Category selection
     window.selectCategory = function(cat) {
       currentCategory = cat;
       availableQuestions = loadProgress(cat);
       if (availableQuestions.length === 0) availableQuestions = [...categories[cat]];
-      document.getElementById("categories").style.display = "none";
-      document.getElementById("question-container").style.display = "block";
-      document.getElementById("back-btn").style.display = "inline-block";
-      document.getElementById("redo-btn").style.display = "inline-block";
+      document.getElementById('categories').style.display = 'none';
+      document.getElementById('back-btn').style.display = 'inline-block';
       nextQuestion();
       updateProgressBar();
     };
 
-    // Go back to menu
+    window.resetAllProgress = function() {
+      Object.keys(categories).forEach(cat => {
+        localStorage.removeItem(`pmo_progress_${cat}`);
+      });
+      alert("All progress has been reset!");
+    };
+
     window.goBack = function() {
-      document.getElementById("categories").style.display = "block";
-      document.getElementById("question-container").style.display = "none";
-      document.getElementById("back-btn").style.display = "none";
-      document.getElementById("redo-btn").style.display = "none";
+      document.getElementById('question-container').style.display='none';
+      document.getElementById('categories').style.display='block';
     };
 
-    // Redo current category
-    window.redoCategory = function() {
-      localStorage.removeItem(`pmo_done_${currentCategory}`);
-      availableQuestions = [...categories[currentCategory]];
-      nextQuestion();
-      updateProgressBar();
-    };
-
-    // Next question
     function nextQuestion() {
+      const container = document.getElementById('question-container');
       if (availableQuestions.length === 0) {
-        document.getElementById("question-text").innerText = "🎉 All questions finished!";
-        document.getElementById("answer-section").style.display = "none";
+        container.style.display='block';
+        document.getElementById('question-text').innerText="🎉 All questions done!";
+        document.getElementById('answer-section').style.display='none';
         updateProgressBar();
         return;
       }
       currentQuestionIndex = Math.floor(Math.random() * availableQuestions.length);
       const qObj = availableQuestions[currentQuestionIndex];
-      document.getElementById("question-text").innerText = qObj.q;
-      document.getElementById("user-answer").value = "";
-      document.getElementById("feedback").innerText = "";
-      document.getElementById("hint").style.display = "none";
-      document.getElementById("answer-section").style.display = "flex";
+      container.style.display='block';
+      document.getElementById('question-text').innerText = qObj.q;
+      document.getElementById('answer-section').style.display='flex';
+      document.getElementById('user-answer').value='';
+      document.getElementById('feedback').innerText='';
+      document.getElementById('hint').style.display='none';
       updateProgressBar();
     }
 
-    // Check answer
     window.checkAnswer = function() {
-      const ans = document.getElementById("user-answer").value.trim().toLowerCase();
+      const ans = document.getElementById('user-answer').value.trim().toLowerCase();
       const qObj = availableQuestions[currentQuestionIndex];
       if (qObj.a.some(a => a.toLowerCase() === ans)) {
-        document.getElementById("feedback").innerText = "✅ Correct!";
+        document.getElementById('feedback').innerText="✅ Correct!";
         availableQuestions.splice(currentQuestionIndex, 1);
         saveProgress();
         updateProgressBar();
         setTimeout(nextQuestion, 1500);
       } else {
-        document.getElementById("feedback").innerText = "❌ Try again";
+        document.getElementById('feedback').innerText="❌ Try again!";
       }
     };
 
-    // Show hint
     window.showHint = function() {
       const qObj = availableQuestions[currentQuestionIndex];
-      document.getElementById("hint").innerText = "💡 Hint: " + qObj.hint;
-      document.getElementById("hint").style.display = "block";
+      document.getElementById('hint').innerText="💡 Hint: " + qObj.hint;
+      document.getElementById('hint').style.display='block';
     };
 
-    // Skip
-    window.skipQuestion = function() {
-      nextQuestion();
-    };
+    window.skipQuestion = function() { nextQuestion(); };
+
+    function updateProgressBar() {
+      const total = categories[currentCategory].length;
+      const done = total - availableQuestions.length;
+      const percent = Math.floor((done / total) * 100);
+      document.getElementById('progress').style.width = percent + '%';
+    }
   </script>
 </body>
 </html>
