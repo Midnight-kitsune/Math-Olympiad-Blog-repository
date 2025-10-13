@@ -6,7 +6,7 @@
   <title>Practise for PMO - Help for Math Olympiad</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
-    body { font-family: Arial, sans-serif; background-color:#f0f0f0; color:#333; margin:0; padding:0; }
+    body { font-family: Arial, sans-serif; background-color:#f0f0f0; color:#333; margin:0; padding:0;}
     .navbar { display:flex; justify-content:space-between; align-items:center; background:#2c3e50; padding:15px 25px;}
     .navbar .logo { color:#fff; font-weight:bold; font-size:20px;}
     .navbar .nav-links { display:flex; gap:15px; list-style:none; }
@@ -47,23 +47,23 @@
     <div id="user-info" style="margin-bottom:20px;"></div>
 
     <div id="categories">
-      <button class="btn btn-cat" onclick="selectCategory('NT')">Number Theory</button>
-      <button class="btn btn-cat" onclick="selectCategory('Geo')">Geometry</button>
-      <button class="btn btn-cat" onclick="selectCategory('Combi')">Combinatorics</button>
-      <button class="btn btn-cat" onclick="selectCategory('Alg')">Algebra</button>
-      <button class="btn btn-cat" onclick="selectCategory('Mixed')">Mixed</button>
+      <button class="btn btn-cat" data-cat="NT">Number Theory</button>
+      <button class="btn btn-cat" data-cat="Geo">Geometry</button>
+      <button class="btn btn-cat" data-cat="Combi">Combinatorics</button>
+      <button class="btn btn-cat" data-cat="Alg">Algebra</button>
+      <button class="btn btn-cat" data-cat="Mixed">Mixed</button>
     </div>
 
-    <button id="back-btn" class="btn-back" onclick="goBack()">← Back to categories</button>
+    <button id="back-btn" class="btn-back">← Back to categories</button>
 
     <div id="question-container">
       <h2 id="question-text"></h2>
       <div id="hint"></div>
       <div id="answer-section">
         <input type="text" id="user-answer" placeholder="Type your answer here"/>
-        <button class="btn btn-cat" onclick="checkAnswer()">Submit</button>
-        <button class="btn btn-cat" onclick="showHint()">Hint</button>
-        <button class="btn btn-cat" onclick="skipQuestion()">Skip</button>
+        <button class="btn btn-cat" id="submit-answer">Submit</button>
+        <button class="btn btn-cat" id="show-hint">Hint</button>
+        <button class="btn btn-cat" id="skip-q">Skip</button>
         <span id="feedback"></span>
       </div>
     </div>
@@ -154,71 +154,80 @@
     let availableQuestions = [];
     let currentQuestionIndex = -1;
 
+    const categoriesDiv = document.getElementById('categories');
+    const backBtn = document.getElementById('back-btn');
+    const questionContainer = document.getElementById('question-container');
+    const questionText = document.getElementById('question-text');
+    const hintDiv = document.getElementById('hint');
+    const userAnswer = document.getElementById('user-answer');
+    const feedback = document.getElementById('feedback');
+
+    // Category buttons
+    categoriesDiv.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => selectCategory(btn.dataset.cat));
+    });
+
+    backBtn.addEventListener('click', goBack);
+    document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+    document.getElementById('show-hint').addEventListener('click', showHint);
+    document.getElementById('skip-q').addEventListener('click', skipQuestion);
+
     function selectCategory(cat) {
       currentCategory = cat;
       availableQuestions = [...categories[cat]];
       currentQuestionIndex = -1;
-      document.getElementById('categories').style.display = 'none';
-      document.getElementById('back-btn').style.display = 'block';
+      categoriesDiv.style.display = 'none';
+      backBtn.style.display = 'block';
       nextQuestion();
     }
 
     function goBack() {
-      document.getElementById('question-container').style.display = 'none';
-      document.getElementById('back-btn').style.display = 'none';
-      document.getElementById('categories').style.display = 'block';
-      document.getElementById('feedback').innerText = '';
-      document.getElementById('hint').style.display='none';
+      questionContainer.style.display = 'none';
+      backBtn.style.display = 'none';
+      categoriesDiv.style.display = 'block';
+      feedback.innerText = '';
+      hintDiv.style.display = 'none';
     }
 
     function nextQuestion() {
       if(availableQuestions.length === 0){
-        document.getElementById('question-container').style.display = 'block';
-        document.getElementById('question-text').innerText = "All questions in this category are finished.";
+        questionContainer.style.display = 'block';
+        questionText.innerText = "All questions in this category are finished.";
         document.getElementById('answer-section').style.display = 'none';
-        document.getElementById('hint').style.display = 'none';
+        hintDiv.style.display = 'none';
         return;
       }
       currentQuestionIndex = Math.floor(Math.random()*availableQuestions.length);
       let qObj = availableQuestions[currentQuestionIndex];
-      document.getElementById('question-container').style.display = 'block';
-      document.getElementById('question-text').innerText = qObj.q;
-      document.getElementById('user-answer').value = '';
-      document.getElementById('feedback').innerText = '';
-      document.getElementById('hint').style.display='none';
+      questionContainer.style.display = 'block';
+      questionText.innerText = qObj.q;
+      userAnswer.value = '';
+      feedback.innerText = '';
+      hintDiv.style.display='none';
       document.getElementById('answer-section').style.display = 'flex';
     }
 
     function checkAnswer() {
-      let userAns = document.getElementById('user-answer').value.trim().toLowerCase();
+      let ans = userAnswer.value.trim().toLowerCase();
       let qObj = availableQuestions[currentQuestionIndex];
-      if(qObj.a.some(a => a.toLowerCase() === userAns)){
-        document.getElementById('feedback').innerText = "✅ Correct!";
+      if(qObj.a.some(a => a.toLowerCase() === ans)){
+        feedback.innerText = "✅ Correct!";
         availableQuestions.splice(currentQuestionIndex,1);
         setTimeout(nextQuestion,3000);
       } else {
-        document.getElementById('feedback').innerText = "❌ Try again!";
+        feedback.innerText = "❌ Try again!";
       }
     }
 
     function showHint() {
       let qObj = availableQuestions[currentQuestionIndex];
-      document.getElementById('hint').innerText = "💡 Hint: " + qObj.hint;
-      document.getElementById('hint').style.display='block';
+      hintDiv.innerText = "💡 Hint: " + qObj.hint;
+      hintDiv.style.display = 'block';
     }
 
     function skipQuestion() {
       nextQuestion();
     }
-
-    // Attach functions to window for inline onclick
-    window.selectCategory = selectCategory;
-    window.goBack = goBack;
-    window.nextQuestion = nextQuestion;
-    window.checkAnswer = checkAnswer;
-    window.showHint = showHint;
-    window.skipQuestion = skipQuestion;
-
   </script>
 </body>
 </html>
