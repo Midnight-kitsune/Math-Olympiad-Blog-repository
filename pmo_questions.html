@@ -3,21 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PMO Sample Questions - Help for Math Olympiad</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Practise for PMO - Help for Math Olympiad</title>
+  <link rel="stylesheet" href="../styles.css">
   <style>
-    body { background-color: #f0f0f0; }
-    .page-header { text-align: center; font-size: 2rem; margin: 30px 0; }
-    .nav-links a { font-size: 16px; }
-    .pdf-buttons { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 20px; }
-    .pdf-buttons button { padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; border: none; background-color: #4CAF50; color: white; }
-    .pdf-buttons button:hover { background-color: #45a049; }
-    .pdf-container { width: 95%; max-width: 900px; margin: auto; }
-    .pdf-frame { width: 100%; height: 600px; border: 2px solid #ccc; border-radius: 10px; margin-top: 20px; display: none; }
+    body { font-family: Arial, sans-serif; background-color:#f0f0f0; color:#333; margin:0; padding:0;}
+    .navbar { display:flex; justify-content:space-between; align-items:center; background:#2c3e50; padding:15px 25px;}
+    .navbar .logo { color:#fff; font-weight:bold; font-size:20px;}
+    .navbar .nav-links { display:flex; gap:15px; list-style:none; }
+    .navbar .nav-links li a { color:#fff; text-decoration:none; font-weight:500;}
+    .navbar .nav-links li a:hover { color:#ffd700;}
+    .content { text-align:center; padding:50px 20px; max-width:900px; margin:auto;}
+    .btn { padding:12px 25px; margin:10px; font-size:18px; font-weight:bold; border:none; border-radius:8px; cursor:pointer; }
+    .btn-cat { background-color:#4CAF50; color:white;}
+    .btn-cat:hover { background-color:#45a049;}
+    .btn-back { font-size:20px; padding:8px 15px; cursor:pointer; margin:20px auto; display:none;}
+    #signin-msg { font-weight:bold; color:#333; margin:20px 0; }
+    #question-container { margin-top:30px; display:none; text-align:left; }
+    #question-container h2 { font-size:22px; margin-bottom:15px; }
+    #answer-section { margin-top:15px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    #feedback { font-weight:bold; margin-left:15px; }
+    #hint { color:#555; margin-top:10px; display:none; font-style:italic;}
+    input[type="text"] { padding:8px 10px; font-size:16px; border-radius:5px; border:1px solid #ccc; width:200px;}
+    @media(max-width:768px){ input[type="text"]{ width:100%; } }
   </style>
 </head>
 <body>
-
   <!-- Navbar -->
   <nav class="navbar">
     <div class="logo">Help for Math Olympiad</div>
@@ -28,33 +38,123 @@
     </ul>
   </nav>
 
-  <!-- Page Header -->
-  <h2 class="page-header">PMO Sample Questions</h2>
+  <main class="content">
+    <h1>Practise for PMO</h1>
+    <div id="signin-msg">Sign in/up with Google to save progress (optional)</div>
+    <!-- Google Sign-in button placeholder -->
+    <div id="google-signin"><button class="btn btn-cat">Sign in with Google</button></div>
 
-  <!-- PDF Buttons -->
-  <div class="pdf-buttons">
-    <button onclick="showPDF(1)">PMO Sample Question - PDF 1</button>
-    <button onclick="showPDF(2)">PMO Sample Question - PDF 2</button>
-    <button onclick="showPDF(3)">PMO Sample Question - PDF 3</button>
-  </div>
+    <!-- Category Buttons -->
+    <div id="categories">
+      <button class="btn btn-cat" onclick="selectCategory('NT')">Number Theory</button>
+      <button class="btn btn-cat" onclick="selectCategory('Geo')">Geometry</button>
+      <button class="btn btn-cat" onclick="selectCategory('Combi')">Combinatorics</button>
+      <button class="btn btn-cat" onclick="selectCategory('Alg')">Algebra</button>
+      <button class="btn btn-cat" onclick="selectCategory('Mixed')">Mixed</button>
+    </div>
 
-  <!-- PDF Frames -->
-  <div class="pdf-container">
-    <iframe id="pdf1" class="pdf-frame" src="https://drive.google.com/file/d/1c0g54cX-tC9rSNDiVCYGtZihQ_DjSqDZ/preview" allow="autoplay"></iframe>
-    <iframe id="pdf2" class="pdf-frame" src="https://drive.google.com/file/d/1xI-IQ8teyI1zFIRyh2W4dQwipQ-T7AxX/preview" allow="autoplay"></iframe>
-    <iframe id="pdf3" class="pdf-frame" src="https://drive.google.com/file/d/1-OK3zKlQSg3VhmM0hdvDCZWeHcZvNs9d/preview" allow="autoplay"></iframe>
-  </div>
+    <!-- Back Button -->
+    <button id="back-btn" class="btn-back" onclick="goBack()">← Back to categories</button>
+
+    <!-- Question Container -->
+    <div id="question-container">
+      <h2 id="question-text"></h2>
+      <div id="hint"></div>
+      <div id="answer-section">
+        <input type="text" id="user-answer" placeholder="Type your answer here"/>
+        <button class="btn btn-cat" onclick="checkAnswer()">Submit</button>
+        <button class="btn btn-cat" onclick="showHint()">Hint</button>
+        <button class="btn btn-cat" onclick="skipQuestion()">Skip</button>
+        <span id="feedback"></span>
+      </div>
+    </div>
+  </main>
 
   <script>
-    function showPDF(num) {
-      // Hide all PDFs
-      document.querySelectorAll('.pdf-frame').forEach(pdf => pdf.style.display = 'none');
-      // Show selected PDF
-      document.getElementById('pdf' + num).style.display = 'block';
-      // Scroll to PDF smoothly
-      document.getElementById('pdf' + num).scrollIntoView({behavior: 'smooth'});
-    }
-  </script>
+    const categories = {
+      'NT': [
+        {q: "The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a:["7","seven"], hint:"What happens if b =1 ? if b =2 ? 3,4?"},
+        {q:"A palindrome is a number that reads the same if you read it left to right or from right to left. A palindrome between 1000 and 10,000 is chosen at random. What is the probability that it is divisible by 7?", a:["1/5"], hint:"We can rewrite our palindrome as a · 103 +b · 102 +b · 101 +a · 100. This is equivalent to 1001a+ 110b."},
+        {q:"The base-nine representation of the number N is 27,006,000,052_(nine). What is the remainder when N is divided by 5?", a:["3"], hint:"Convert number into base 10."}
+      ],
+      'Combi': [
+        {q:"How many ways are there to rearrange the letters of the word SYNONYMS?", a:["5040","7!"], hint:"Have you learned the formula yet?"},
+        {q:"How many four-digit positive integers have at least one digit that is a 2 or a 3?", a:["5416"], hint:"Complementary counting."},
+        {q:"Find the number of subsets of {1,2,3,4,5,6,7,8} that are subsets of neither {1,2,3,4,5} nor {4,5,6,7,8}.", a:["196"], hint:"Complementary counting."}
+      ],
+      'Geo': [
+        {q:"Let 4ABC be an isosceles triangle with BC = AC and ∠ACB = 40°. Construct the circle with diameter BC, and let D and E be the other intersection points of the circle with the sides AC and AB, respectively. Let F be the intersection of the diagonals of the quadrilateral BCDE. What is the degree measure of ∠BFC?", a:["110"], hint:"Always make diagram in geometry questions."}
+      ],
+      'Alg': [
+        {q:"Let P(x) = x³ + x² - 2x + 2020 be a polynomial with roots r, s, t. What is P(1)?", a:["-4038","(-4038)"], hint:"Use Vieta's theorem."}
+      ],
+      'Mixed': []
+    };
 
+    // Fill Mixed category with all questions
+    categories['Mixed'] = [].concat(categories['NT'], categories['Combi'], categories['Geo'], categories['Alg']);
+
+    let currentCategory = '';
+    let availableQuestions = [];
+    let currentQuestionIndex = -1;
+
+    function selectCategory(cat) {
+      currentCategory = cat;
+      availableQuestions = [...categories[cat]];
+      currentQuestionIndex = -1;
+      document.getElementById('categories').style.display = 'none';
+      document.getElementById('back-btn').style.display = 'block';
+      nextQuestion();
+    }
+
+    function goBack() {
+      document.getElementById('question-container').style.display = 'none';
+      document.getElementById('back-btn').style.display = 'none';
+      document.getElementById('categories').style.display = 'block';
+      document.getElementById('feedback').innerText = '';
+      document.getElementById('hint').style.display='none';
+    }
+
+    function nextQuestion() {
+      if(availableQuestions.length === 0){
+        document.getElementById('question-container').style.display = 'block';
+        document.getElementById('question-text').innerText = "All questions in this category are finished.";
+        document.getElementById('answer-section').style.display = 'none';
+        document.getElementById('hint').style.display = 'none';
+        return;
+      }
+      currentQuestionIndex = Math.floor(Math.random()*availableQuestions.length);
+      let qObj = availableQuestions[currentQuestionIndex];
+      document.getElementById('question-container').style.display = 'block';
+      document.getElementById('question-text').innerText = qObj.q;
+      document.getElementById('user-answer').value = '';
+      document.getElementById('feedback').innerText = '';
+      document.getElementById('hint').style.display='none';
+      document.getElementById('answer-section').style.display = 'flex';
+    }
+
+    function checkAnswer() {
+      let userAns = document.getElementById('user-answer').value.trim().toLowerCase();
+      let qObj = availableQuestions[currentQuestionIndex];
+      if(qObj.a.some(a => a.toLowerCase() === userAns)){
+        document.getElementById('feedback').innerText = "✅ Correct!";
+        availableQuestions.splice(currentQuestionIndex,1);
+        setTimeout(nextQuestion,3000);
+      } else {
+        document.getElementById('feedback').innerText = "❌ Try again!";
+      }
+    }
+
+    function showHint() {
+      let qObj = availableQuestions[currentQuestionIndex];
+      document.getElementById('hint').innerText = "💡 Hint: " + qObj.hint;
+      document.getElementById('hint').style.display='block';
+    }
+
+    function skipQuestion() {
+      nextQuestion();
+    }
+
+  </script>
 </body>
 </html>
