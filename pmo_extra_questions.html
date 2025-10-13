@@ -6,7 +6,7 @@
 <title>Practise for PMO - Help for Math Olympiad</title>
 <link rel="stylesheet" href="../styles.css">
 <style>
-  body { font-family: Arial, sans-serif; background:#f0f0f0; margin:0; padding:0; color:#333;}
+  body { font-family: Arial, sans-serif; background-color:#f0f0f0; color:#333; margin:0; padding:0;}
   .navbar { display:flex; justify-content:space-between; align-items:center; background:#2c3e50; padding:15px 25px;}
   .navbar .logo { color:#fff; font-weight:bold; font-size:20px;}
   .navbar .nav-links { display:flex; gap:15px; list-style:none; }
@@ -29,6 +29,7 @@
 </head>
 <body>
 
+<!-- Navbar -->
 <nav class="navbar">
   <div class="logo">Help for Math Olympiad</div>
   <ul class="nav-links">
@@ -73,11 +74,11 @@
   </div>
 </main>
 
-<!-- Firebase Auth -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDpSyQVF76lRNRVemUnGmuGXs8Xi7OZ77w",
   authDomain: "pmopractise.firebaseapp.com",
@@ -87,65 +88,65 @@ const firebaseConfig = {
   appId: "1:195352280795:web:fd8f97064b8c7f933bd6fe",
   measurementId: "G-MBPF7J64LD"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-const signInBtn = document.getElementById("google-signin-btn");
-const signOutBtn = document.getElementById("google-signout-btn");
-const userInfo = document.getElementById("user-info");
+// Google Auth
+window.addEventListener('DOMContentLoaded', () => {
+  const signInBtn = document.getElementById("google-signin-btn");
+  const signOutBtn = document.getElementById("google-signout-btn");
+  const userInfo = document.getElementById("user-info");
 
-signInBtn.addEventListener("click", async () => {
-  const provider = new GoogleAuthProvider();
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
-    signInBtn.style.display = "none";
-    signOutBtn.style.display = "inline-block";
-  } catch (err) {
-    alert("Sign-in failed: "+err.message);
-  }
-});
+  signInBtn.addEventListener("click", async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
+      signInBtn.style.display = "none";
+      signOutBtn.style.display = "inline-block";
+    } catch(err){
+      alert("Sign-in failed: " + err.message);
+    }
+  });
 
-signOutBtn.addEventListener("click", async () => {
-  await signOut(auth);
-  userInfo.innerHTML = "";
-  signInBtn.style.display = "inline-block";
-  signOutBtn.style.display = "none";
-});
-
-onAuthStateChanged(auth, user => {
-  if(user){
-    userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
-    signInBtn.style.display = "none";
-    signOutBtn.style.display = "inline-block";
-  } else {
+  signOutBtn.addEventListener("click", async () => {
+    await signOut(auth);
     userInfo.innerHTML = "";
     signInBtn.style.display = "inline-block";
     signOutBtn.style.display = "none";
-  }
-});
-</script>
+  });
 
-<!-- Question Logic -->
-<script>
+  onAuthStateChanged(auth, user => {
+    if(user){
+      userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
+      signInBtn.style.display = "none";
+      signOutBtn.style.display = "inline-block";
+    } else {
+      userInfo.innerHTML = "";
+      signInBtn.style.display = "inline-block";
+      signOutBtn.style.display = "none";
+    }
+  });
+});
+
+// Questions Data
 const categories = {
   'NT': [
     {q:"The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a:["7","seven"], hint:"What happens if b =1 ? if b =2 ? 3,4?"},
-    {q:"A palindrome is a number that reads the same left to right or right to left. A palindrome between 1000 and 10,000 is chosen at random. What is the probability that it is divisible by 7?", a:["1/5"], hint:"We can rewrite as 1001a + 110b."},
-    {q:"The base-nine representation of the number N is 27,006,000,052_(nine). What is the remainder when N is divided by 5?", a:["3"], hint:"Convert to base 10."}
+    {q:"A palindrome is a number that reads the same left-to-right or right-to-left. Palindrome between 1000 and 10,000 chosen at random. Probability divisible by 7?", a:["1/5"], hint:"1001a + 110b"},
+    {q:"The base-nine representation of the number N is 27,006,000,052_(nine). What is the remainder when N is divided by 5?", a:["3"], hint:"Convert number into base 10"}
   ],
   'Combi': [
-    {q:"How many ways are there to rearrange the letters of the word SYNONYMS?", a:["5040","7!"], hint:"Have you learned the formula yet?"},
-    {q:"How many four-digit positive integers have at least one digit that is a 2 or a 3?", a:["5416"], hint:"Complementary counting."},
-    {q:"Find the number of subsets of {1,2,3,4,5,6,7,8} that are subsets of neither {1,2,3,4,5} nor {4,5,6,7,8}.", a:["196"], hint:"Complementary counting."}
+    {q:"How many ways to rearrange letters of SYNONYMS?", a:["5040","7!"], hint:"Use factorial formula"},
+    {q:"How many four-digit numbers have at least one digit 2 or 3?", a:["5416"], hint:"Complementary counting"},
+    {q:"Find subsets of {1-8} not in {1-5} nor {4-8}.", a:["196"], hint:"Complementary counting"}
   ],
   'Geo': [
-    {q:"Let 4ABC be an isosceles triangle with BC = AC and ∠ACB = 40°. Construct the circle with diameter BC. D and E are intersections with AC and AB. F is intersection of diagonals of BCDE. Degree measure of ∠BFC?", a:["110"], hint:"Make a diagram."}
+    {q:"Let 4ABC isosceles triangle BC=AC, ∠ACB=40°. Circle diameter BC intersects AC, AB at D,E. F intersection of quadrilateral BCDE diagonals. Degree measure ∠BFC?", a:["110"], hint:"Draw diagram"}
   ],
   'Alg': [
-    {q:"Let P(x) = x³ + x² - 2x + 2020 be a polynomial with roots r,s,t. What is P(1)?", a:["-4038","(-4038)"], hint:"Use Vieta's theorem."}
+    {q:"P(x)=x³+x²-2x+2020, roots r,s,t. Find P(1)?", a:["-4038","(-4038)"], hint:"Use Vieta's theorem"}
   ]
 };
 categories['Mixed'] = [].concat(categories['NT'], categories['Combi'], categories['Geo'], categories['Alg']);
@@ -154,6 +155,7 @@ let currentCategory = '';
 let availableQuestions = [];
 let currentQuestionIndex = -1;
 
+// Functions
 function selectCategory(cat){
   currentCategory = cat;
   availableQuestions = [...categories[cat]];
@@ -180,7 +182,7 @@ function nextQuestion(){
     return;
   }
   currentQuestionIndex = Math.floor(Math.random()*availableQuestions.length);
-  const qObj = availableQuestions[currentQuestionIndex];
+  let qObj = availableQuestions[currentQuestionIndex];
   document.getElementById('question-container').style.display='block';
   document.getElementById('question-text').innerText = qObj.q;
   document.getElementById('user-answer').value='';
@@ -190,9 +192,9 @@ function nextQuestion(){
 }
 
 function checkAnswer(){
-  const userAns = document.getElementById('user-answer').value.trim().toLowerCase();
-  const qObj = availableQuestions[currentQuestionIndex];
-  if(qObj.a.some(a => a.toLowerCase()===userAns)){
+  let userAns = document.getElementById('user-answer').value.trim().toLowerCase();
+  let qObj = availableQuestions[currentQuestionIndex];
+  if(qObj.a.some(a => a.toLowerCase() === userAns)){
     document.getElementById('feedback').innerText="✅ Correct!";
     availableQuestions.splice(currentQuestionIndex,1);
     setTimeout(nextQuestion,3000);
@@ -202,7 +204,7 @@ function checkAnswer(){
 }
 
 function showHint(){
-  const qObj = availableQuestions[currentQuestionIndex];
+  let qObj = availableQuestions[currentQuestionIndex];
   document.getElementById('hint').innerText="💡 Hint: "+qObj.hint;
   document.getElementById('hint').style.display='block';
 }
@@ -210,14 +212,6 @@ function showHint(){
 function skipQuestion(){
   nextQuestion();
 }
-
-// Expose functions globally for onclick
-window.selectCategory = selectCategory;
-window.goBack = goBack;
-window.checkAnswer = checkAnswer;
-window.showHint = showHint;
-window.skipQuestion = skipQuestion;
 </script>
-
 </body>
 </html>
