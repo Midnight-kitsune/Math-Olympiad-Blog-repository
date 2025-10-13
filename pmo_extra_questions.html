@@ -27,8 +27,8 @@
   @media(max-width:768px){ input[type="text"]{ width:100%; } }
 
   /* Progress bar styles */
-  .progress-container { width: 80%; background: #ddd; border-radius: 10px; margin: 10px auto; height: 20px; overflow: hidden;}
-  .progress-bar { height: 100%; background: #4CAF50; width: 0%; transition: width 0.5s ease; }
+  .progress-container { width: 80%; background: #ddd; border-radius: 10px; margin: 10px auto; height: 22px; overflow: hidden; position: relative;}
+  .progress-bar { height: 100%; background: #4CAF50; width: 0%; transition: width 0.5s ease; text-align:center; color:white; font-weight:bold; font-size:14px; line-height:22px;}
 </style>
 </head>
 <body>
@@ -54,23 +54,23 @@
     <!-- Category Buttons -->
     <div id="categories">
       <div>
-        <button class="btn btn-cat" onclick="selectCategory('NT')">Number Theory</button>
+        <button class="btn btn-cat" data-cat="NT">Number Theory</button>
         <div class="progress-container"><div id="progress-NT" class="progress-bar"></div></div>
       </div>
       <div>
-        <button class="btn btn-cat" onclick="selectCategory('Geo')">Geometry</button>
+        <button class="btn btn-cat" data-cat="Geo">Geometry</button>
         <div class="progress-container"><div id="progress-Geo" class="progress-bar"></div></div>
       </div>
       <div>
-        <button class="btn btn-cat" onclick="selectCategory('Combi')">Combinatorics</button>
+        <button class="btn btn-cat" data-cat="Combi">Combinatorics</button>
         <div class="progress-container"><div id="progress-Combi" class="progress-bar"></div></div>
       </div>
       <div>
-        <button class="btn btn-cat" onclick="selectCategory('Alg')">Algebra</button>
+        <button class="btn btn-cat" data-cat="Alg">Algebra</button>
         <div class="progress-container"><div id="progress-Alg" class="progress-bar"></div></div>
       </div>
       <div>
-        <button class="btn btn-cat" onclick="selectCategory('Mixed')">Mixed</button>
+        <button class="btn btn-cat" data-cat="Mixed">Mixed</button>
         <div class="progress-container"><div id="progress-Mixed" class="progress-bar"></div></div>
       </div>
     </div>
@@ -115,7 +115,7 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    getAnalytics(app);
     const auth = getAuth(app);
 
     const signInBtn = document.getElementById("google-signin-btn");
@@ -200,6 +200,11 @@
       nextQuestion();
     }
 
+    // fix: make all category buttons clickable
+    document.querySelectorAll('#categories button[data-cat]').forEach(btn=>{
+      btn.addEventListener('click',()=>selectCategory(btn.dataset.cat));
+    });
+
     function redoCategory(){
       localStorage.removeItem(`pmo_progress_${currentCategory}`);
       availableQuestions = [...categories[currentCategory]];
@@ -263,9 +268,12 @@
       Object.keys(categories).forEach(cat => {
         const done = JSON.parse(localStorage.getItem(`pmo_progress_${cat}`)) || [];
         const total = categories[cat].length;
-        const percent = (done.length / total) * 100;
+        const percent = Math.round((done.length / total) * 100);
         const bar = document.getElementById(`progress-${cat}`);
-        if(bar) bar.style.width = percent + "%";
+        if(bar){
+          bar.style.width = percent + "%";
+          bar.textContent = percent + "%";
+        }
       });
     }
 
@@ -283,4 +291,3 @@
   </script>
 </body>
 </html>
-
