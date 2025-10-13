@@ -3,89 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Practise for PMO - Help for Math Olympiad</title>
-<link rel="stylesheet" href="../styles.css">
+<title>Practise for PMO</title>
 <style>
-  body { font-family: Arial, sans-serif; background-color:#f0f0f0; color:#333; margin:0; padding:0; }
-  .navbar { display:flex; justify-content:space-between; align-items:center; background:#2c3e50; padding:15px 25px;}
-  .navbar .logo { color:#fff; font-weight:bold; font-size:20px;}
-  .navbar .nav-links { display:flex; gap:15px; list-style:none; }
-  .navbar .nav-links li a { color:#fff; text-decoration:none; font-weight:500;}
-  .navbar .nav-links li a:hover { color:#ffd700;}
-  .content { text-align:center; padding:40px 20px; max-width:900px; margin:auto;}
-  .btn { padding:12px 25px; margin:10px; font-size:18px; font-weight:bold; border:none; border-radius:8px; cursor:pointer; transition:0.3s;}
-  .btn-cat { background-color:#4CAF50; color:white;}
-  .btn-cat:hover { background-color:#45a049;}
-  .btn-back { font-size:20px; padding:8px 15px; cursor:pointer; margin:20px auto; display:none;}
-  #signin-msg { font-weight:bold; color:#333; margin:20px 0; }
-  #question-container { margin-top:30px; display:none; text-align:left; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
-  #question-container h2 { font-size:22px; margin-bottom:15px; }
-  #answer-section { margin-top:15px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-  #feedback { font-weight:bold; margin-left:15px; }
-  #hint { color:#555; margin-top:10px; display:none; font-style:italic;}
-  input[type="text"] { padding:8px 10px; font-size:16px; border-radius:5px; border:1px solid #ccc; width:200px;}
-  #progress { margin-top:20px; text-align:left; max-width:900px; margin:auto;}
-  .progress-bar { background:#ddd; border-radius:5px; overflow:hidden; margin-bottom:10px;}
-  .progress-fill { height:20px; background:#4CAF50; width:0%; text-align:center; color:white; font-weight:bold;}
-  @media(max-width:768px){ input[type="text"]{ width:100%; } }
+body { font-family: Arial; background:#f0f0f0; margin:0; padding:0;}
+.navbar { display:flex; justify-content:space-between; background:#2c3e50; padding:15px 25px; color:white;}
+.navbar .logo { font-weight:bold; font-size:20px;}
+.nav-links { display:flex; list-style:none; gap:15px; }
+.nav-links li a { color:white; text-decoration:none;}
+.content { max-width:900px; margin:auto; text-align:center; padding:40px 20px;}
+.btn { padding:12px 25px; margin:10px; font-size:18px; border:none; border-radius:8px; cursor:pointer;}
+.btn-cat { background:#4CAF50; color:white;}
+.btn-cat:hover { background:#45a049;}
+.btn-back { display:none; font-size:20px; padding:8px 15px; cursor:pointer; margin:20px auto;}
+#question-container { display:none; text-align:left; background:white; padding:20px; border-radius:10px; margin-top:20px;}
+#answer-section { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; align-items:center;}
+#hint { color:#555; font-style:italic; display:none;}
+input[type=text] { padding:8px; border-radius:5px; border:1px solid #ccc; width:200px;}
+.progress-bar { background:#ddd; border-radius:5px; overflow:hidden; margin-bottom:10px;}
+.progress-fill { height:20px; background:#4CAF50; width:0%; text-align:center; color:white; font-weight:bold;}
 </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="logo">Help for Math Olympiad</div>
-    <ul class="nav-links">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="../questions.html">Questions</a></li>
-      <li><a href="articles.html">Articles</a></li>
-    </ul>
-  </nav>
 
-  <main class="content">
-    <h1>Practise for PMO</h1>
-    <div id="signin-msg">Sign in/up with Google to save progress (optional)</div>
-    <div style="margin-bottom:30px;">
-      <button id="google-signin-btn" class="btn btn-cat">Sign in with Google</button>
-      <button id="google-signout-btn" class="btn btn-cat" style="display:none;">Sign out</button>
-    </div>
-    <div id="user-info" style="margin-bottom:20px;"></div>
+<nav class="navbar">
+  <div class="logo">Help for Math Olympiad</div>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Questions</a></li>
+  </ul>
+</nav>
 
-    <!-- Category Buttons -->
-    <div id="categories">
-      <button class="btn btn-cat" onclick="selectCategory('NT')">Number Theory</button>
-      <button class="btn btn-cat" onclick="selectCategory('Geo')">Geometry</button>
-      <button class="btn btn-cat" onclick="selectCategory('Combi')">Combinatorics</button>
-      <button class="btn btn-cat" onclick="selectCategory('Alg')">Algebra</button>
-      <button class="btn btn-cat" onclick="selectCategory('Mixed')">Mixed</button>
-    </div>
+<main class="content">
+<h1>Practise for PMO</h1>
+<div id="signin-msg">Sign in/up with Google to save progress (optional)</div>
+<div>
+  <button id="google-signin-btn" class="btn btn-cat">Sign in with Google</button>
+  <button id="google-signout-btn" class="btn btn-cat" style="display:none;">Sign out</button>
+</div>
+<div id="user-info"></div>
 
-    <button class="btn btn-cat" onclick="redoCategory()" style="display:none;" id="redo-btn">Redo All Questions</button>
-    <button id="back-btn" class="btn-back" onclick="goBack()">← Back to categories</button>
+<div id="categories">
+  <button class="btn btn-cat" onclick="selectCategory('NT')">Number Theory</button>
+  <button class="btn btn-cat" onclick="selectCategory('Geo')">Geometry</button>
+  <button class="btn btn-cat" onclick="selectCategory('Combi')">Combinatorics</button>
+  <button class="btn btn-cat" onclick="selectCategory('Alg')">Algebra</button>
+  <button class="btn btn-cat" onclick="selectCategory('Mixed')">Mixed</button>
+</div>
 
-    <div id="question-container">
-      <h2 id="question-text"></h2>
-      <div id="hint"></div>
-      <div id="answer-section">
-        <input type="text" id="user-answer" placeholder="Type your answer here"/>
-        <button class="btn btn-cat" onclick="checkAnswer()">Submit</button>
-        <button class="btn btn-cat" onclick="showHint()">Hint</button>
-        <button class="btn btn-cat" onclick="skipQuestion()">Skip</button>
-        <span id="feedback"></span>
-      </div>
-    </div>
+<button id="back-btn" class="btn-back" onclick="goBack()">← Back to categories</button>
 
-    <div id="progress">
-      <h2>Progress Dashboard</h2>
-      <div>Number Theory <div class="progress-bar"><div id="progress-NT" class="progress-fill">0%</div></div></div>
-      <div>Geometry <div class="progress-bar"><div id="progress-Geo" class="progress-fill">0%</div></div></div>
-      <div>Combinatorics <div class="progress-bar"><div id="progress-Combi" class="progress-fill">0%</div></div></div>
-      <div>Algebra <div class="progress-bar"><div id="progress-Alg" class="progress-fill">0%</div></div></div>
-      <div>Mixed <div class="progress-bar"><div id="progress-Mixed" class="progress-fill">0%</div></div></div>
-    </div>
-  </main>
+<div id="question-container">
+  <h2 id="question-text"></h2>
+  <div id="hint"></div>
+  <div id="answer-section">
+    <input type="text" id="user-answer" placeholder="Type your answer here"/>
+    <button class="btn btn-cat" onclick="checkAnswer()">Submit</button>
+    <button class="btn btn-cat" onclick="showHint()">Hint</button>
+    <button class="btn btn-cat" onclick="skipQuestion()">Skip</button>
+    <span id="feedback"></span>
+  </div>
+</div>
+
+<h2>Progress Dashboard</h2>
+<div>Number Theory <div class="progress-bar"><div id="progress-NT" class="progress-fill">0%</div></div></div>
+<div>Geometry <div class="progress-bar"><div id="progress-Geo" class="progress-fill">0%</div></div></div>
+<div>Combinatorics <div class="progress-bar"><div id="progress-Combi" class="progress-fill">0%</div></div></div>
+<div>Algebra <div class="progress-bar"><div id="progress-Alg" class="progress-fill">0%</div></div></div>
+<div>Mixed <div class="progress-bar"><div id="progress-Mixed" class="progress-fill">0%</div></div></div>
+</main>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -94,82 +82,73 @@ const firebaseConfig = {
   projectId: "pmopractise",
   storageBucket: "pmopractise.firebasestorage.app",
   messagingSenderId: "195352280795",
-  appId: "1:195352280795:web:fd8f97064b8c7f933bd6fe",
-  measurementId: "G-MBPF7J64LD"
+  appId: "1:195352280795:web:fd8f97064b8c7f933bd6fe"
 };
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
 
+initializeApp(firebaseConfig);
+const auth = getAuth();
 const signInBtn = document.getElementById("google-signin-btn");
 const signOutBtn = document.getElementById("google-signout-btn");
 const userInfo = document.getElementById("user-info");
 
-signInBtn.addEventListener("click", async () => {
+signInBtn.onclick = async ()=>{
   const provider = new GoogleAuthProvider();
-  try {
+  try{
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
-    signInBtn.style.display = "none";
-    signOutBtn.style.display = "inline-block";
-  } catch (error) { alert("Sign-in failed: "+error.message); }
-});
+    userInfo.innerHTML=`Hello, <strong>${user.displayName}</strong>`;
+    signInBtn.style.display='none';
+    signOutBtn.style.display='inline-block';
+  } catch(err){ alert(err.message); }
+};
 
-signOutBtn.addEventListener("click", async () => {
+signOutBtn.onclick = async ()=>{
   await signOut(auth);
-  userInfo.innerHTML = "";
-  signInBtn.style.display = "inline-block";
-  signOutBtn.style.display = "none";
-});
+  userInfo.innerHTML='';
+  signInBtn.style.display='inline-block';
+  signOutBtn.style.display='none';
+};
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, user=>{
   if(user){
-    userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
-    signInBtn.style.display = "none";
-    signOutBtn.style.display = "inline-block";
-  } else {
-    userInfo.innerHTML = "";
-    signInBtn.style.display = "inline-block";
-    signOutBtn.style.display = "none";
+    userInfo.innerHTML=`Hello, <strong>${user.displayName}</strong>`;
+    signInBtn.style.display='none';
+    signOutBtn.style.display='inline-block';
+  }else{
+    userInfo.innerHTML='';
+    signInBtn.style.display='inline-block';
+    signOutBtn.style.display='none';
   }
 });
 
 // Questions
 const categories = {
   'NT': [
-    {q:"The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a:["7","seven"], hint:"What happens if b=1,2,3,4?"},
-    {q:"A palindrome is a number that reads the same left to right or right to left. A palindrome between 1000 and 10,000 is chosen at random. What is the probability that it is divisible by 7?", a:["1/5"], hint:"Rewrite as 1001a + 110b."}
+    {q:"Angle a>b prime. Least b?", a:["7","seven"], hint:"Try b=1,2,3,4"},
+    {q:"Palindrome divisible by 7 probability?", a:["1/5"], hint:"Rewrite 1001a+110b"}
   ],
-  'Combi': [
-    {q:"How many ways are there to rearrange the letters of the word SYNONYMS?", a:["5040","7!"], hint:"Use factorial formula."}
-  ],
-  'Geo': [
-    {q:"Let △ABC be isosceles with BC=AC and ∠ACB=40°. Construct circle diameter BC, D,E intersections with AC,AB. F intersection of diagonals BCDE. Degree measure ∠BFC?", a:["110"], hint:"Draw diagram."}
-  ],
-  'Alg': [
-    {q:"Let P(x) = x³ + x² - 2x + 2020 be polynomial with roots r,s,t. What is P(1)?", a:["-4038","(-4038)"], hint:"Use Vieta's theorem."}
-  ]
+  'Geo':[ {q:"△ABC isosceles ... ∠BFC?", a:["110"], hint:"Draw diagram"} ],
+  'Combi':[ {q:"SYNONYMS arrangements?", a:["5040","7!"], hint:"Use factorial"} ],
+  'Alg':[ {q:"P(1) for x³+x²-2x+2020?", a:["-4038"], hint:"Vieta's"} ]
 };
-categories['Mixed'] = [].concat(categories['NT'], categories['Combi'], categories['Geo'], categories['Alg']);
 
-let currentCategory = '';
-let availableQuestions = [];
-let currentQuestionIndex = -1;
+categories['Mixed'] = [].concat(categories['NT'], categories['Geo'], categories['Combi'], categories['Alg']);
 
-// Track globally solved questions
-let solvedQuestions = JSON.parse(localStorage.getItem("pmo_solved_questions")) || [];
+let currentCategory='';
+let availableQuestions=[];
+let currentQuestionIndex=-1;
+let solvedQuestions=JSON.parse(localStorage.getItem("pmo_solved_questions"))||[];
 
 function updateProgress(){
   for(const cat of ['NT','Geo','Combi','Alg','Mixed']){
     const total = categories[cat].length;
     const done = categories[cat].filter(q=>solvedQuestions.includes(q.q)).length;
-    const percent = Math.round(done/total*100);
-    document.getElementById(`progress-${cat}`).style.width=percent+'%';
-    document.getElementById(`progress-${cat}`).innerText=percent+'%';
+    const percent=Math.round(done/total*100);
+    const bar=document.getElementById(`progress-${cat}`);
+    bar.style.width=percent+'%';
+    bar.innerText=percent+'%';
   }
 }
-
 function saveSolved(qObj){
   if(!solvedQuestions.includes(qObj.q)){
     solvedQuestions.push(qObj.q);
@@ -177,76 +156,69 @@ function saveSolved(qObj){
     updateProgress();
   }
 }
-
 function loadAvailable(cat){
+  // exclude globally solved questions
   return categories[cat].filter(q=>!solvedQuestions.includes(q.q));
 }
 
-function selectCategory(cat){
-  currentCategory = cat;
-  availableQuestions = loadAvailable(cat);
-  currentQuestionIndex = -1;
+// Expose functions globally so inline onclick works
+window.selectCategory = function(cat){
+  currentCategory=cat;
+  availableQuestions=loadAvailable(cat);
+  currentQuestionIndex=-1;
   document.getElementById('categories').style.display='none';
   document.getElementById('back-btn').style.display='block';
-  document.getElementById('redo-btn').style.display='inline-block';
   nextQuestion();
-}
+};
 
-function redoCategory(){
-  localStorage.removeItem(`pmo_progress_${currentCategory}`);
-  availableQuestions = loadAvailable(currentCategory);
-  nextQuestion();
-}
-
-function goBack(){
+window.goBack = function(){
   document.getElementById('question-container').style.display='none';
   document.getElementById('back-btn').style.display='none';
-  document.getElementById('redo-btn').style.display='none';
   document.getElementById('categories').style.display='block';
-  document.getElementById('feedback').innerText='';
-  document.getElementById('hint').style.display='none';
-}
+  document.getElementById('feedback')?.innerText='';
+  document.getElementById('hint')?.style.display='none';
+};
 
-function nextQuestion(){
+window.nextQuestion = function(){
   if(availableQuestions.length===0){
     document.getElementById('question-container').style.display='block';
-    document.getElementById('question-text').innerText="All questions in this category are finished.";
+    document.getElementById('question-text').innerText="All questions finished in this category.";
     document.getElementById('answer-section').style.display='none';
     document.getElementById('hint').style.display='none';
     return;
   }
-  currentQuestionIndex = Math.floor(Math.random()*availableQuestions.length);
-  const qObj = availableQuestions[currentQuestionIndex];
+  currentQuestionIndex=Math.floor(Math.random()*availableQuestions.length);
+  const qObj=availableQuestions[currentQuestionIndex];
   document.getElementById('question-container').style.display='block';
   document.getElementById('question-text').innerText=qObj.q;
   document.getElementById('user-answer').value='';
   document.getElementById('feedback').innerText='';
   document.getElementById('hint').style.display='none';
   document.getElementById('answer-section').style.display='flex';
-}
+};
 
-function checkAnswer(){
-  const userAns = document.getElementById('user-answer').value.trim().toLowerCase();
-  const qObj = availableQuestions[currentQuestionIndex];
+window.checkAnswer=function(){
+  const userAns=document.getElementById('user-answer').value.trim().toLowerCase();
+  const qObj=availableQuestions[currentQuestionIndex];
   if(qObj.a.some(a=>a.toLowerCase()===userAns)){
     document.getElementById('feedback').innerText="✅ Correct!";
     saveSolved(qObj);
     availableQuestions.splice(currentQuestionIndex,1);
     setTimeout(nextQuestion,1500);
-  } else {
+  }else{
     document.getElementById('feedback').innerText="❌ Try again!";
   }
-}
+};
 
-function showHint(){
-  const qObj = availableQuestions[currentQuestionIndex];
+window.showHint=function(){
+  const qObj=availableQuestions[currentQuestionIndex];
   document.getElementById('hint').innerText="💡 Hint: "+qObj.hint;
   document.getElementById('hint').style.display='block';
-}
+};
 
-function skipQuestion(){
+window.skipQuestion=function(){
   nextQuestion();
-}
+};
 
 updateProgress();
 </script>
