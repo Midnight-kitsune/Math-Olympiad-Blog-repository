@@ -1,293 +1,160 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Practise for PMO - Help for Math Olympiad</title>
-<link rel="stylesheet" href="../styles.css">
-<style>
-  body { font-family: Arial, sans-serif; background-color:#f0f0f0; color:#333; margin:0; padding:0; }
-  .navbar { display:flex; justify-content:space-between; align-items:center; background:#2c3e50; padding:15px 25px;}
-  .navbar .logo { color:#fff; font-weight:bold; font-size:20px;}
-  .navbar .nav-links { display:flex; gap:15px; list-style:none; }
-  .navbar .nav-links li a { color:#fff; text-decoration:none; font-weight:500;}
-  .navbar .nav-links li a:hover { color:#ffd700;}
-  .content { text-align:center; padding:40px 20px; max-width:900px; margin:auto;}
-  .btn { padding:12px 25px; margin:10px; font-size:18px; font-weight:bold; border:none; border-radius:8px; cursor:pointer; transition:0.3s;}
-  .btn-cat { background-color:#4CAF50; color:white;}
-  .btn-cat:hover { background-color:#45a049;}
-  .btn-back { font-size:20px; padding:8px 15px; cursor:pointer; margin:20px auto; display:none;}
-  #signin-msg { font-weight:bold; color:#333; margin:20px 0; }
-  #question-container { margin-top:30px; display:none; text-align:left; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
-  #question-container h2 { font-size:22px; margin-bottom:15px; }
-  #answer-section { margin-top:15px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-  #feedback { font-weight:bold; margin-left:15px; }
-  #hint { color:#555; margin-top:10px; display:none; font-style:italic;}
-  input[type="text"] { padding:8px 10px; font-size:16px; border-radius:5px; border:1px solid #ccc; width:200px;}
-  @media(max-width:768px){ input[type="text"]{ width:100%; } }
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
-  /* Progress bar styles */
-  .progress-container { width: 80%; background: #ddd; border-radius: 10px; margin: 10px auto; height: 22px; overflow: hidden; position: relative;}
-  .progress-bar { height: 100%; background: #4CAF50; width: 0%; transition: width 0.5s ease; text-align:center; color:white; font-weight:bold; font-size:14px; line-height:22px;}
-</style>
-</head>
-<body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="logo">Help for Math Olympiad</div>
-    <ul class="nav-links">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="../questions.html">Questions</a></li>
-      <li><a href="articles.html">Articles</a></li>
-    </ul>
-  </nav>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDpSyQVF76lRNRVemUnGmuGXs8Xi7OZ77w",
+    authDomain: "pmopractise.firebaseapp.com",
+    projectId: "pmopractise",
+    storageBucket: "pmopractise.firebasestorage.app",
+    messagingSenderId: "195352280795",
+    appId: "1:195352280795:web:fd8f97064b8c7f933bd6fe",
+    measurementId: "G-MBPF7J64LD"
+  };
 
-  <main class="content">
-    <h1>Practise for PMO</h1>
-    <div id="signin-msg">Sign in/up with Google to save progress (optional)</div>
-    <div style="margin-bottom:30px;">
-      <button id="google-signin-btn" class="btn btn-cat">Sign in with Google</button>
-      <button id="google-signout-btn" class="btn btn-cat" style="display:none;">Sign out</button>
-    </div>
-    <div id="user-info" style="margin-bottom:20px;"></div>
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
 
-    <!-- Category Buttons -->
-    <div id="categories">
-      <div>
-        <button class="btn btn-cat" data-cat="NT">Number Theory</button>
-        <div class="progress-container"><div id="progress-NT" class="progress-bar"></div></div>
-      </div>
-      <div>
-        <button class="btn btn-cat" data-cat="Geo">Geometry</button>
-        <div class="progress-container"><div id="progress-Geo" class="progress-bar"></div></div>
-      </div>
-      <div>
-        <button class="btn btn-cat" data-cat="Combi">Combinatorics</button>
-        <div class="progress-container"><div id="progress-Combi" class="progress-bar"></div></div>
-      </div>
-      <div>
-        <button class="btn btn-cat" data-cat="Alg">Algebra</button>
-        <div class="progress-container"><div id="progress-Alg" class="progress-bar"></div></div>
-      </div>
-      <div>
-        <button class="btn btn-cat" data-cat="Mixed">Mixed</button>
-        <div class="progress-container"><div id="progress-Mixed" class="progress-bar"></div></div>
-      </div>
-    </div>
+  const signInBtn = document.getElementById("google-signin-btn");
+  const signOutBtn = document.getElementById("google-signout-btn");
+  const userInfo = document.getElementById("user-info");
 
-    <!-- Redo All Questions Button -->
-    <button class="btn btn-cat" onclick="redoCategory()" style="display:none;" id="redo-btn">Redo All Questions</button>
+  signInBtn.addEventListener("click", async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
+      signInBtn.style.display = "none";
+      signOutBtn.style.display = "inline-block";
+    } catch (error) { alert("Sign-in failed: "+error.message); }
+  });
 
-    <!-- Reset Progress Button -->
-    <button class="btn btn-cat" onclick="resetAllProgress()">Reset All Progress</button>
+  signOutBtn.addEventListener("click", async () => {
+    await signOut(auth);
+    userInfo.innerHTML = "";
+    signInBtn.style.display = "inline-block";
+    signOutBtn.style.display = "none";
+  });
 
-    <!-- Back Button -->
-    <button id="back-btn" class="btn-back" onclick="goBack()">← Back to categories</button>
-
-    <!-- Question Container -->
-    <div id="question-container">
-      <h2 id="question-text"></h2>
-      <div id="hint"></div>
-      <div id="answer-section">
-        <input type="text" id="user-answer" placeholder="Type your answer here"/>
-        <button class="btn btn-cat" onclick="checkAnswer()">Submit</button>
-        <button class="btn btn-cat" onclick="showHint()">Hint</button>
-        <button class="btn btn-cat" onclick="skipQuestion()">Skip</button>
-        <span id="feedback"></span>
-      </div>
-    </div>
-  </main>
-
-  <!-- Firebase & JS -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpSyQVF76lRNRVemUnGmuGXs8Xi7OZ77w",
-      authDomain: "pmopractise.firebaseapp.com",
-      projectId: "pmopractise",
-      storageBucket: "pmopractise.firebasestorage.app",
-      messagingSenderId: "195352280795",
-      appId: "1:195352280795:web:fd8f97064b8c7f933bd6fe",
-      measurementId: "G-MBPF7J64LD"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    getAnalytics(app);
-    const auth = getAuth(app);
-
-    const signInBtn = document.getElementById("google-signin-btn");
-    const signOutBtn = document.getElementById("google-signout-btn");
-    const userInfo = document.getElementById("user-info");
-
-    signInBtn.addEventListener("click", async () => {
-      const provider = new GoogleAuthProvider();
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
-        signInBtn.style.display = "none";
-        signOutBtn.style.display = "inline-block";
-      } catch (error) { alert("Sign-in failed: "+error.message); }
-    });
-
-    signOutBtn.addEventListener("click", async () => {
-      await signOut(auth);
+  onAuthStateChanged(auth, (user) => {
+    if(user){
+      userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
+      signInBtn.style.display = "none";
+      signOutBtn.style.display = "inline-block";
+    } else {
       userInfo.innerHTML = "";
       signInBtn.style.display = "inline-block";
       signOutBtn.style.display = "none";
-    });
-
-    onAuthStateChanged(auth, (user) => {
-      if(user){
-        userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
-        signInBtn.style.display = "none";
-        signOutBtn.style.display = "inline-block";
-      } else {
-        userInfo.innerHTML = "";
-        signInBtn.style.display = "inline-block";
-        signOutBtn.style.display = "none";
-      }
-    });
-
-    // --- Questions ---
-    const categories = {
-      'NT': [
-        {q:"The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a:["7","seven"], hint:"What happens if b=1,2,3,4?"},
-        {q:"A palindrome between 1000 and 10,000 is chosen at random. What is the probability that it is divisible by 7?", a:["1/5"], hint:"Rewrite as 1001a + 110b."},
-        {q:"The base-nine representation of the number N is 27,006,000,052_(nine). What is the remainder when N is divided by 5?", a:["3"], hint:"Convert to base 10."}
-      ],
-      'Combi': [
-        {q:"How many ways are there to rearrange the letters of the word SYNONYMS?", a:["5040","7!"], hint:"Use factorial formula."},
-        {q:"How many four-digit positive integers have at least one digit that is a 2 or a 3?", a:["5416"], hint:"Complementary counting."},
-        {q:"Find the number of subsets of {1,2,3,4,5,6,7,8} that are subsets of neither {1,2,3,4,5} nor {4,5,6,7,8}.", a:["196"], hint:"Complementary counting."}
-      ],
-      'Geo': [
-        {q:"Let △ABC be isosceles with BC=AC and ∠ACB=40°. Construct the circle with diameter BC, and let D,E be intersections with AC and AB. F is intersection of diagonals of BCDE. Degree measure of ∠BFC?", a:["110"], hint:"Draw diagram."}
-      ],
-      'Alg': [
-        {q:"Let P(x) = x³ + x² - 2x + 2020 be polynomial with roots r,s,t. What is P(1)?", a:["-4038","(-4038)"], hint:"Use Vieta's theorem."}
-      ]
-    };
-    categories['Mixed'] = [].concat(categories['NT'], categories['Combi'], categories['Geo'], categories['Alg']);
-
-    let currentCategory = '';
-    let availableQuestions = [];
-    let currentQuestionIndex = -1;
-
-    function saveProgress() {
-      const progressKey = `pmo_progress_${currentCategory}`;
-      const doneQuestions = categories[currentCategory].filter(q => !availableQuestions.includes(q));
-      localStorage.setItem(progressKey, JSON.stringify(doneQuestions));
-      updateProgressBars();
     }
+  });
 
-    function loadProgress(cat) {
-      const progressKey = `pmo_progress_${cat}`;
-      const doneQuestions = JSON.parse(localStorage.getItem(progressKey)) || [];
-      return categories[cat].filter(q => !doneQuestions.some(dq => dq.q === q.q));
+  // Questions
+  const categories = {
+    'NT': [
+      {q:"The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a:["7","seven"], hint:"What happens if b=1,2,3,4?"},
+      {q:"A palindrome is a number that reads the same left to right or right to left. A palindrome between 1000 and 10,000 is chosen at random. What is the probability that it is divisible by 7?", a:["1/5"], hint:"Rewrite as 1001a + 110b."},
+      {q:"The base-nine representation of the number N is 27,006,000,052_(nine). What is the remainder when N is divided by 5?", a:["3"], hint:"Convert to base 10."}
+    ],
+    'Combi': [
+      {q:"How many ways are there to rearrange the letters of the word SYNONYMS?", a:["5040","7!"], hint:"Use factorial formula."},
+      {q:"How many four-digit positive integers have at least one digit that is a 2 or a 3?", a:["5416"], hint:"Complementary counting."},
+      {q:"Find the number of subsets of {1,2,3,4,5,6,7,8} that are subsets of neither {1,2,3,4,5} nor {4,5,6,7,8}.", a:["196"], hint:"Complementary counting."}
+    ],
+    'Geo': [
+      {q:"Let △ABC be isosceles with BC=AC and ∠ACB=40°. Construct the circle with diameter BC, and let D,E be intersections with AC and AB. F is intersection of diagonals of BCDE. Degree measure of ∠BFC?", a:["110"], hint:"Draw diagram."}
+    ],
+    'Alg': [
+      {q:"Let P(x) = x³ + x² - 2x + 2020 be polynomial with roots r,s,t. What is P(1)?", a:["-4038","(-4038)"], hint:"Use Vieta's theorem."}
+    ]
+  };
+  categories['Mixed'] = [].concat(categories['NT'], categories['Combi'], categories['Geo'], categories['Alg']);
+
+  let currentCategory = '';
+  let availableQuestions = [];
+  let currentQuestionIndex = -1;
+
+  function saveProgress() {
+    const progressKey = `pmo_progress_${currentCategory}`;
+    const doneQuestions = categories[currentCategory].filter(q => !availableQuestions.includes(q));
+    localStorage.setItem(progressKey, JSON.stringify(doneQuestions));
+  }
+
+  function loadProgress(cat) {
+    const progressKey = `pmo_progress_${cat}`;
+    const doneQuestions = JSON.parse(localStorage.getItem(progressKey)) || [];
+    // FIX: Use filtering by index, not object reference
+    return categories[cat].filter(q => !doneQuestions.some(dq => dq.q === q.q));
+  }
+
+  window.selectCategory = function(cat){
+    currentCategory = cat;
+    availableQuestions = loadProgress(cat);
+    if (availableQuestions.length === 0) {
+      availableQuestions = [...categories[cat]];
     }
+    currentQuestionIndex = -1;
+    document.getElementById('categories').style.display = 'none';
+    document.getElementById('back-btn').style.display = 'block';
+    document.getElementById('redo-btn').style.display = 'inline-block';
+    nextQuestion();
+  }
 
-    function selectCategory(cat){
-      currentCategory = cat;
-      availableQuestions = loadProgress(cat);
-      currentQuestionIndex = -1;
-      document.getElementById('categories').style.display = 'none';
-      document.getElementById('back-btn').style.display = 'block';
-      document.getElementById('redo-btn').style.display = 'inline-block';
-      nextQuestion();
-    }
+  window.redoCategory = function(){
+    localStorage.removeItem(`pmo_progress_${currentCategory}`);
+    availableQuestions = [...categories[currentCategory]];
+    nextQuestion();
+  }
 
-    // fix: make all category buttons clickable
-    document.querySelectorAll('#categories button[data-cat]').forEach(btn=>{
-      btn.addEventListener('click',()=>selectCategory(btn.dataset.cat));
-    });
+  window.goBack = function(){
+    document.getElementById('question-container').style.display='none';
+    document.getElementById('back-btn').style.display='none';
+    document.getElementById('redo-btn').style.display='none';
+    document.getElementById('categories').style.display='block';
+    document.getElementById('feedback').innerText='';
+    document.getElementById('hint').style.display='none';
+  }
 
-    function redoCategory(){
-      localStorage.removeItem(`pmo_progress_${currentCategory}`);
-      availableQuestions = [...categories[currentCategory]];
-      updateProgressBars();
-      nextQuestion();
-    }
-
-    function goBack(){
-      document.getElementById('question-container').style.display='none';
-      document.getElementById('back-btn').style.display='none';
-      document.getElementById('redo-btn').style.display='none';
-      document.getElementById('categories').style.display='block';
-      document.getElementById('feedback').innerText='';
-      document.getElementById('hint').style.display='none';
-      updateProgressBars();
-    }
-
-    function nextQuestion(){
-      if(availableQuestions.length===0){
-        document.getElementById('question-container').style.display='block';
-        document.getElementById('question-text').innerText="All questions in this category are finished.";
-        document.getElementById('answer-section').style.display='none';
-        document.getElementById('hint').style.display='none';
-        return;
-      }
-      currentQuestionIndex = Math.floor(Math.random()*availableQuestions.length);
-      const qObj = availableQuestions[currentQuestionIndex];
+  function nextQuestion(){
+    if(availableQuestions.length===0){
       document.getElementById('question-container').style.display='block';
-      document.getElementById('question-text').innerText = qObj.q;
-      document.getElementById('user-answer').value='';
-      document.getElementById('feedback').innerText='';
+      document.getElementById('question-text').innerText="All questions in this category are finished.";
+      document.getElementById('answer-section').style.display='none';
       document.getElementById('hint').style.display='none';
-      document.getElementById('answer-section').style.display='flex';
+      return;
     }
+    currentQuestionIndex = Math.floor(Math.random()*availableQuestions.length);
+    const qObj = availableQuestions[currentQuestionIndex];
+    document.getElementById('question-container').style.display='block';
+    document.getElementById('question-text').innerText = qObj.q;
+    document.getElementById('user-answer').value='';
+    document.getElementById('feedback').innerText='';
+    document.getElementById('hint').style.display='none';
+    document.getElementById('answer-section').style.display='flex';
+  }
 
-    function checkAnswer(){
-      const userAns = document.getElementById('user-answer').value.trim().toLowerCase();
-      const qObj = availableQuestions[currentQuestionIndex];
-      if(qObj.a.some(a=>a.toLowerCase()===userAns)){
-        document.getElementById('feedback').innerText="✅ Correct!";
-        availableQuestions.splice(currentQuestionIndex,1);
-        saveProgress();
-        setTimeout(nextQuestion,3000);
-      } else {
-        document.getElementById('feedback').innerText="❌ Try again!";
-      }
+  window.checkAnswer = function(){
+    const userAns = document.getElementById('user-answer').value.trim().toLowerCase();
+    const qObj = availableQuestions[currentQuestionIndex];
+    if(qObj.a.some(a=>a.toLowerCase()===userAns)){
+      document.getElementById('feedback').innerText="✅ Correct!";
+      availableQuestions.splice(currentQuestionIndex,1);
+      saveProgress();
+      setTimeout(nextQuestion,3000);
+    } else {
+      document.getElementById('feedback').innerText="❌ Try again!";
     }
+  }
 
-    function showHint(){
-      const qObj = availableQuestions[currentQuestionIndex];
-      document.getElementById('hint').innerText="💡 Hint: "+qObj.hint;
-      document.getElementById('hint').style.display='block';
-    }
+  window.showHint = function(){
+    const qObj = availableQuestions[currentQuestionIndex];
+    document.getElementById('hint').innerText="💡 Hint: "+qObj.hint;
+    document.getElementById('hint').style.display='block';
+  }
 
-    function skipQuestion(){
-      nextQuestion();
-    }
-
-    // --- Progress Bar Updates ---
-    function updateProgressBars() {
-      Object.keys(categories).forEach(cat => {
-        const done = JSON.parse(localStorage.getItem(`pmo_progress_${cat}`)) || [];
-        const total = categories[cat].length;
-        const percent = Math.round((done.length / total) * 100);
-        const bar = document.getElementById(`progress-${cat}`);
-        if(bar){
-          bar.style.width = percent + "%";
-          bar.textContent = percent + "%";
-        }
-      });
-    }
-
-    function resetAllProgress(){
-      if(confirm("Are you sure you want to reset all progress?")){
-        Object.keys(categories).forEach(cat=>{
-          localStorage.removeItem(`pmo_progress_${cat}`);
-        });
-        updateProgressBars();
-      }
-    }
-
-    // Initialize progress bars when page loads
-    updateProgressBars();
-  </script>
-</body>
-</html>
+  window.skipQuestion = function(){
+    nextQuestion();
+  }
+</script>
