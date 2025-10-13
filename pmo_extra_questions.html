@@ -1,3 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practise for PMO - Help for Math Olympiad</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { font-family: Arial, sans-serif; background-color:#f0f0f0; color:#333; margin:0; padding:0; }
+  .navbar { display:flex; justify-content:space-between; align-items:center; background:#2c3e50; padding:15px 25px;}
+  .navbar .logo { color:#fff; font-weight:bold; font-size:20px;}
+  .navbar .nav-links { display:flex; gap:15px; list-style:none; }
+  .navbar .nav-links li a { color:#fff; text-decoration:none; font-weight:500;}
+  .navbar .nav-links li a:hover { color:#ffd700;}
+  .content { text-align:center; padding:40px 20px; max-width:900px; margin:auto;}
+  .btn { padding:12px 25px; margin:10px; font-size:18px; font-weight:bold; border:none; border-radius:8px; cursor:pointer; transition:0.3s;}
+  .btn-cat { background-color:#4CAF50; color:white;}
+  .btn-cat:hover { background-color:#45a049;}
+  .btn-back { font-size:20px; padding:8px 15px; cursor:pointer; margin:20px auto; display:none;}
+  #signin-msg { font-weight:bold; color:#333; margin:20px 0; }
+  #question-container { margin-top:30px; display:none; text-align:left; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+  #question-container h2 { font-size:22px; margin-bottom:15px; }
+  #answer-section { margin-top:15px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  #feedback { font-weight:bold; margin-left:15px; }
+  #hint { color:#555; margin-top:10px; display:none; font-style:italic;}
+  input[type="text"] { padding:8px 10px; font-size:16px; border-radius:5px; border:1px solid #ccc; width:200px;}
+  @media(max-width:768px){ input[type="text"]{ width:100%; } }
+
+  /* Progress bar styles */
+  .progress-container { width: 80%; background: #ddd; border-radius: 10px; margin: 10px auto; height: 22px; overflow: hidden; position: relative;}
+  .progress-bar { height: 100%; background: #4CAF50; width: 0%; transition: width 0.5s ease; text-align:center; color:white; font-weight:bold; font-size:14px; line-height:22px;}
+</style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Help for Math Olympiad</div>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../questions.html">Questions</a></li>
+      <li><a href="articles.html">Articles</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <h1>Practise for PMO</h1>
+    <div id="signin-msg">Sign in/up with Google to save progress (optional)</div>
+    <div style="margin-bottom:30px;">
+      <button id="google-signin-btn" class="btn btn-cat">Sign in with Google</button>
+      <button id="google-signout-btn" class="btn btn-cat" style="display:none;">Sign out</button>
+    </div>
+    <div id="user-info" style="margin-bottom:20px;"></div>
+
+    <!-- Category Buttons -->
+    <div id="categories">
+      <div>
+        <button class="btn btn-cat" data-cat="NT">Number Theory</button>
+        <div class="progress-container"><div id="progress-NT" class="progress-bar"></div></div>
+      </div>
+      <div>
+        <button class="btn btn-cat" data-cat="Geo">Geometry</button>
+        <div class="progress-container"><div id="progress-Geo" class="progress-bar"></div></div>
+      </div>
+      <div>
+        <button class="btn btn-cat" data-cat="Combi">Combinatorics</button>
+        <div class="progress-container"><div id="progress-Combi" class="progress-bar"></div></div>
+      </div>
+      <div>
+        <button class="btn btn-cat" data-cat="Alg">Algebra</button>
+        <div class="progress-container"><div id="progress-Alg" class="progress-bar"></div></div>
+      </div>
+      <div>
+        <button class="btn btn-cat" data-cat="Mixed">Mixed</button>
+        <div class="progress-container"><div id="progress-Mixed" class="progress-bar"></div></div>
+      </div>
+    </div>
+
+    <!-- Redo All Questions Button -->
+    <button class="btn btn-cat" onclick="redoCategory()" style="display:none;" id="redo-btn">Redo All Questions</button>
+
+    <!-- Reset Progress Button -->
+    <button class="btn btn-cat" onclick="resetAllProgress()">Reset All Progress</button>
+
+    <!-- Back Button -->
+    <button id="back-btn" class="btn-back" onclick="goBack()">← Back to categories</button>
+
+    <!-- Question Container -->
+    <div id="question-container">
+      <h2 id="question-text"></h2>
+      <div id="hint"></div>
+      <div id="answer-section">
+        <input type="text" id="user-answer" placeholder="Type your answer here"/>
+        <button class="btn btn-cat" onclick="checkAnswer()">Submit</button>
+        <button class="btn btn-cat" onclick="showHint()">Hint</button>
+        <button class="btn btn-cat" onclick="skipQuestion()">Skip</button>
+        <span id="feedback"></span>
+      </div>
+    </div>
+  </main>
+
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
