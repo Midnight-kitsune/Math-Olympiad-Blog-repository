@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PMO Practice </title>
+  <title>PMO Practice — Levels & Leaderboard</title>
 
   <style>
     :root{
@@ -26,22 +26,28 @@
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
       padding:18px;
-      padding-top:84px; /* safe space for top toggle */
+      padding-top:100px; /* safe space for top toggle + level */
       display:flex;
       align-items:flex-start;
       justify-content:center;
     }
 
-    /* Top progress toggle (centered) */
-    #progress-toggle{
+    /* Top area: progress toggle + level pill */
+    #top-bar{
       position:fixed;
       top:14px;
       left:50%;
       transform:translateX(-50%);
-      z-index:1200;
+      z-index:1300;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    #progress-toggle{
       background:linear-gradient(90deg,var(--dark), #2b3948);
       color:white;
-      padding:10px 18px;
+      padding:10px 16px;
       border-radius:999px;
       box-shadow:0 6px 18px rgba(16,24,40,0.12);
       display:inline-flex;
@@ -52,7 +58,33 @@
       user-select:none;
       font-weight:600;
     }
-    #progress-toggle:hover{ transform:translateX(-50%) scale(1.02); box-shadow:0 10px 30px rgba(16,24,40,0.18) }
+    #progress-toggle:hover{ transform:scale(1.02); box-shadow:0 10px 30px rgba(16,24,40,0.18) }
+
+    /* Level pill */
+    #level-pill{
+      background:linear-gradient(90deg,#fff,#f8fffb);
+      border-radius:999px;
+      padding:8px 12px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      border:1px solid rgba(12,20,32,0.06);
+      cursor:pointer;
+      box-shadow:0 6px 18px rgba(12,20,32,0.04);
+      font-weight:700;
+      color:var(--dark);
+      min-width:120px;
+      justify-content:center;
+    }
+    #level-pill .lvl-badge{
+      background:linear-gradient(90deg,var(--accent-2),var(--accent));
+      color:white;
+      padding:6px 8px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:13px;
+      display:inline-block;
+    }
 
     /* Progress panel */
     #progress-panel{
@@ -110,6 +142,73 @@
       box-shadow:inset 0 -1px 0 rgba(0,0,0,0.03);
     }
     .bar-fill{ height:100%; background:var(--accent); width:0%; transition:width .6s cubic-bezier(.2,.9,.2,1) }
+
+    /* Level / leaderboard panel */
+    #level-panel{
+      position:fixed;
+      top:60px;
+      left:50%;
+      transform:translateX(-50%) translateY(-6px);
+      z-index:1200;
+      width:min(720px,94%);
+      max-width:720px;
+      background:var(--card);
+      border-radius:12px;
+      box-shadow:0 18px 50px rgba(15,23,42,0.12);
+      padding:16px;
+      display:none;
+      flex-direction:column;
+      gap:12px;
+      transition:opacity .18s ease, transform .18s ease;
+      overflow:hidden;
+    }
+    #level-panel.show{ display:flex; opacity:1; transform:translateX(-50%) translateY(0); }
+
+    .profile-row{ display:flex; gap:12px; align-items:center }
+    .profile-avatar{ width:56px;height:56px;border-radius:999px; object-fit:cover; background:#eee; display:inline-block }
+    .xp-bar-wrap{ flex:1; height:12px; background:#f0f6fb; border-radius:999px; overflow:hidden; margin-top:6px }
+    .xp-bar-fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--accent-2),var(--accent)); transition:width .6s cubic-bezier(.2,.9,.2,1) }
+
+    .leaderboard{ display:flex; flex-direction:column; gap:8px; max-height:42vh; overflow:auto; padding-right:6px }
+    .leader-row{ display:flex; align-items:center; gap:12px; justify-content:space-between; padding:8px; border-radius:8px }
+    .leader-left{ display:flex; gap:12px; align-items:center }
+    .leader-rank{ width:22px; text-align:center; font-weight:800 }
+    .leader-name{ font-weight:700 }
+    .leader-xp{ font-weight:800; color:var(--muted) }
+
+    /* modal overlay for reset confirm */
+    .modal-overlay{
+      position:fixed; inset:0; background:rgba(8,12,20,0.45); display:none; z-index:2000;
+      align-items:center; justify-content:center; padding:18px;
+    }
+    .modal-overlay.show{ display:flex }
+    .modal-card{
+      width:100%; max-width:520px; background:var(--card); border-radius:12px; padding:18px; box-shadow:0 18px 50px rgba(0,0,0,0.2);
+    }
+    .modal-actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:14px; flex-wrap:wrap }
+
+    input[type="text"].confirm-input{ width:100%; padding:10px 12px; border-radius:8px; border:1px solid #e0e6ef }
+
+    /* confetti (small) */
+    .confetti {
+      pointer-events:none;
+      position:fixed;
+      left:50%; top:40%;
+      transform:translate(-50%,-50%);
+      z-index:2500;
+      width:260px; height:160px;
+      overflow:visible;
+    }
+    .confetti-piece{
+      position:absolute; width:8px; height:12px; background:var(--accent); opacity:0.95;
+      transform-origin:center;
+      animation:confetti-fall 900ms linear forwards;
+      border-radius:2px;
+    }
+    @keyframes confetti-fall{
+      0%{ transform:translateY(-20px) rotate(0deg); opacity:1 }
+      100%{ transform:translateY(220px) rotate(360deg); opacity:0 }
+    }
 
     /* page container */
     .container{
@@ -246,20 +345,26 @@
     /* footer / small */
     .small{ font-size:13px; color:var(--muted) }
 
-    /* responsive tweaks */
     @media (max-width:720px){
-      body{ padding:12px; padding-top:88px }
-      #progress-toggle{ top:10px; padding:8px 12px; font-size:14px }
-      #progress-panel{ top:54px; width:94% }
-      .brand .logo{ width:40px;height:40px }
-      #question-text{ font-size:16px }
+      body{ padding:12px; padding-top:110px }
+      #progress-toggle{ padding:8px 12px; font-size:14px }
+      #progress-panel,#level-panel{ top:62px; width:94% }
+      #top-bar{ left:50%; transform:translateX(-50%) scale(0.98) }
+      #level-pill{ min-width:92px; padding:6px 10px; font-size:13px }
+      .profile-avatar{ width:44px;height:44px }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top progress toggle -->
-  <div id="progress-toggle" title="Show progress">📊 Progress</div>
+  <!-- Top controls: progress toggle + level pill -->
+  <div id="top-bar">
+    <div id="progress-toggle" title="Show progress">📊 Progress</div>
+    <div id="level-pill" title="Show level & leaderboard">
+      <div class="lvl-badge" id="level-number">L1</div>
+      <div id="level-text">Level 1 • 0 XP</div>
+    </div>
+  </div>
 
   <!-- Progress panel -->
   <div id="progress-panel" aria-hidden="true">
@@ -267,11 +372,48 @@
       <h3>Category progress</h3>
       <button id="progress-close" aria-label="Close progress">✖</button>
     </div>
-    <div class="progress-list" id="progress-list">
-      <!-- Filled dynamically -->
-    </div>
+    <div class="progress-list" id="progress-list"></div>
     <div class="small">Progress is synced to your account when signed-in. Otherwise it's saved locally to this device.</div>
   </div>
+
+  <!-- Level & leaderboard panel -->
+  <div id="level-panel" aria-hidden="true">
+    <div id="level-top" style="display:flex; justify-content:space-between; align-items:center">
+      <div style="display:flex; gap:12px; align-items:center">
+        <div class="profile-avatar" id="me-avatar"></div>
+        <div>
+          <div id="me-name" style="font-weight:800">Guest</div>
+          <div style="font-size:13px; color:var(--muted)" id="me-level-small">Level 1 • 0 XP</div>
+          <div class="xp-bar-wrap" style="width:240px; margin-top:8px;">
+            <div class="xp-bar-fill" id="me-xp-fill"></div>
+          </div>
+        </div>
+      </div>
+      <button id="level-close" aria-label="Close" style="background:transparent;border:none;font-size:18px;cursor:pointer;color:var(--muted)">✖</button>
+    </div>
+
+    <h4 style="margin:4px 0 0 0">Global leaderboard</h4>
+    <div class="leaderboard" id="leaderboard-list">
+      <!-- rows populated dynamically -->
+    </div>
+    <div class="small" id="your-rank-spot" style="text-align:right"></div>
+  </div>
+
+  <!-- reset modal overlay -->
+  <div class="modal-overlay" id="reset-modal" aria-hidden="true">
+    <div class="modal-card">
+      <h3 style="margin-top:0">⚠ Reset all progress?</h3>
+      <p style="color:var(--muted)">Type <strong>CONFIRM</strong> below to permanently clear ALL progress and levels for this account/device. This action cannot be undone.</p>
+      <input class="confirm-input" id="confirm-input" placeholder='Type CONFIRM to proceed' />
+      <div class="modal-actions">
+        <button id="cancel-reset" class="btn ghost" style="background:transparent; border:1px solid rgba(0,0,0,0.06)">Cancel</button>
+        <button id="do-reset" class="btn" disabled style="opacity:0.6">Reset now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- confetti container -->
+  <div class="confetti" id="confetti-container" aria-hidden="true"></div>
 
   <div class="container">
     <header>
@@ -303,13 +445,12 @@
       </div>
 
       <div id="categories" class="category-grid" style="margin-top:12px">
-        <!-- Buttons filled in initial markup -->
         <button class="cat-btn" data-cat="NT" onclick="selectCategory('NT')">Number Theory</button>
         <button class="cat-btn" data-cat="Geo" onclick="selectCategory('Geo')">Geometry</button>
         <button class="cat-btn" data-cat="Combi" onclick="selectCategory('Combi')">Combinatorics</button>
         <button class="cat-btn" data-cat="Alg" onclick="selectCategory('Alg')">Algebra</button>
         <button class="cat-btn" data-cat="Mixed" onclick="selectCategory('Mixed')">Mixed</button>
-        <button class="cat-btn" onclick="resetAllProgress()" style="background:linear-gradient(90deg,#fff,#fff); border:1px solid rgba(200,50,50,0.08); color:#c0392b">Reset All Progress</button>
+        <button class="cat-btn" id="reset-btn" onclick="openResetModal()" style="background:linear-gradient(90deg,#fff,#fff); border:1px solid rgba(200,50,50,0.08); color:#c0392b">Reset All Progress</button>
       </div>
     </main>
 
@@ -318,7 +459,7 @@
       <div id="question-text">Question text</div>
 
       <div class="input-row">
-        <input id="user-answer" placeholder="Type your answer (e.g. 1 or 1/2)" />
+        <input id="user-answer" />
         <div class="controls">
           <button class="btn" onclick="checkAnswer()">Submit</button>
           <button class="btn ghost" onclick="showHint()">Hint</button>
@@ -339,11 +480,15 @@
 
   <!-- Firebase + App logic -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+    /* =========================
+       Firebase + App implementation
+       ========================= */
 
-    /* ====== CONFIG - replace with your project's config if needed ====== */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, orderBy, limit, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    // Your Firebase config (client keys are safe in frontend for Firebase)
     const firebaseConfig = {
       apiKey: "AIzaSyDpSyQVF76lRNRVemUnGmuGXs8Xi7OZ77w",
       authDomain: "pmopractise.firebaseapp.com",
@@ -358,9 +503,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    /* ========== Questions dataset ==========
-       NOTE: use the complete questions you want. Identify questions by their 'q' string.
-    */
+    /* ========= Questions dataset (use full questions here) ========= */
     const baseCategories = {
       'NT': [
         { q:"The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a:["7","seven"], hint:"Try small primes and remember a+b=90 for acute angles." },
@@ -376,11 +519,9 @@
         { q:"△ABC is isosceles with BC=AC, ∠ACB=40°. Circle with diameter BC meets AC, AB at D,E. ∠BFC=?", a:["110","110°"], hint:"Draw the diagram and use cyclic properties."}
       ],
       'Alg': [
-        { q:"P(x)=x³+x²−r²x+2020 with roots r,s,t. Find P(1).", a:["-4038"], hint:"Since one root is r, what equation do you get when you put x=r in P(x)"}
+        { q:"P(x)=x³+x²−r²x+2020 with roots r,s,t. Find P(1).", a:["-4038"], hint:"Since one root is r, what equation do you get when you put x=r in P(x)?"}
       ]
     };
-
-    // Build deduplicated Mixed as union (by q text)
     function buildMixed(){
       const seen = new Set();
       const mixed = [];
@@ -396,73 +537,146 @@
     }
     baseCategories['Mixed'] = buildMixed();
 
-    /* ========== Storage logic ==========
-       - If signed-in: progress saved in Firestore under `users/{uid}` doc field `allDone` (array of q strings)
-       - If not signed-in: saved in localStorage key `pmo_all_done`
-       - On sign-in we merge local->cloud (no loss)
-    */
+    /* ====== Storage & state ====== */
     const LOCAL_KEY = "pmo_all_done";
+    const LOCAL_UID_KEY = "pmo_guest_uid"; // optional
+    const XP_PER_Q = 10;
+
+    let allDone = []; // array of question q strings
+    let currentUser = null; // firebase user
+    let currentCategory = '';
+    let availableQuestions = [];
+    let currentQuestionIndex = -1;
+    let panelHideTimeout = null;
+
+    // Elements
+    const progressToggle = document.getElementById('progress-toggle');
+    const progressPanel = document.getElementById('progress-panel');
+    const progressClose = document.getElementById('progress-close');
+    const progressList = document.getElementById('progress-list');
+
+    const levelPill = document.getElementById('level-pill');
+    const levelPanel = document.getElementById('level-panel');
+    const levelClose = document.getElementById('level-close');
+    const levelNumber = document.getElementById('level-number');
+    const levelText = document.getElementById('level-text');
+    const meAvatar = document.getElementById('me-avatar');
+    const meName = document.getElementById('me-name');
+    const meLevelSmall = document.getElementById('me-level-small');
+    const meXpFill = document.getElementById('me-xp-fill');
+    const leaderboardList = document.getElementById('leaderboard-list');
+    const yourRankSpot = document.getElementById('your-rank-spot');
+
+    const signinBtn = document.getElementById('google-signin-btn');
+    const signoutBtn = document.getElementById('google-signout-btn');
+    const userInfoDiv = document.getElementById('user-info');
+    const signedStatus = document.getElementById('signed-status');
+
+    // Reset modal
+    const resetBtn = document.getElementById('reset-btn');
+    const resetModal = document.getElementById('reset-modal');
+    const confirmInput = document.getElementById('confirm-input');
+    const doResetBtn = document.getElementById('do-reset');
+    const cancelResetBtn = document.getElementById('cancel-reset');
+
+    // confetti container
+    const confettiContainer = document.getElementById('confetti-container');
+
+    // question UI
+    const questionContainer = document.getElementById('question-container');
+    const questionText = document.getElementById('question-text');
+    const userAnswer = document.getElementById('user-answer');
+    const feedback = document.getElementById('feedback');
+    const hintDiv = document.getElementById('hint');
+
+    /* ========== Utility: XP & Level calculation ==========
+         Using the thresholds you requested:
+         - Level 1: 0-49
+         - Level 2: 50-119
+         - Level 3: 120-210
+         Additional levels can be added in LEVEL_RANGES array.
+    */
+    const LEVEL_RANGES = [
+      { level:1, min:0, max:49 },
+      { level:2, min:50, max:119 },
+      { level:3, min:120, max:210 },
+      // If you want more levels add: {level:4, min:211, max:...}
+    ];
+
+    function getLevelFromXP(xp){
+      for(const r of LEVEL_RANGES){
+        if(xp >= r.min && xp <= r.max) return r.level;
+      }
+      // if beyond defined ranges, extrapolate linearly: every extra 50 xp -> +1 level
+      if(xp > LEVEL_RANGES[LEVEL_RANGES.length-1].max){
+        const baseLevel = LEVEL_RANGES[LEVEL_RANGES.length-1].level;
+        const baseMax = LEVEL_RANGES[LEVEL_RANGES.length-1].max;
+        const extra = xp - baseMax;
+        const extraLevels = Math.floor(extra/50) + 1;
+        return baseLevel + extraLevels;
+      }
+      return 1;
+    }
+    function levelNextThreshold(level){
+      const r = LEVEL_RANGES.find(x => x.level === level);
+      if(r) return r.max + 1;
+      // if not defined, estimate
+      const last = LEVEL_RANGES[LEVEL_RANGES.length-1];
+      const extraLevels = level - last.level;
+      return last.max + (extraLevels * 50) + 1;
+    }
+
+    function xpFromDone(doneArray){ return (doneArray || []).length * XP_PER_Q; }
+
+    /* ===== Storage helpers (local) ===== */
+    function loadLocalDone(){ try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]"); } catch(e){ return []; } }
+    function saveLocalDone(arr){ localStorage.setItem(LOCAL_KEY, JSON.stringify(arr)); }
+
+    /* ===== Firestore helpers (cloud) ===== */
     async function loadCloudProgress(uid){
       try{
         const ref = doc(db, "users", uid);
         const snap = await getDoc(ref);
         if(snap.exists()){
           const data = snap.data();
-          return Array.isArray(data.allDone) ? data.allDone : [];
+          return { allDone: Array.isArray(data.allDone) ? data.allDone : [], xp: typeof data.xp === 'number' ? data.xp : null, displayName: data.displayName || null, photoURL: data.photoURL || null, lastSeen: data.lastSeen || null };
         } else {
-          // create a doc with empty allDone
-          await setDoc(ref, { allDone: [] });
-          return [];
+          // create empty doc
+          await setDoc(ref, { allDone: [], xp: 0, displayName: null, photoURL: null, lastSeen: serverTimestamp() });
+          return { allDone: [], xp: 0 };
         }
       }catch(err){
         console.error("Error loading remote progress:", err);
-        return [];
+        return { allDone: [], xp: 0 };
       }
     }
-    async function saveCloudProgress(uid, arr){
+    async function saveCloudProgress(uid, allDoneArray, displayName, photoURL){
       try{
         const ref = doc(db, "users", uid);
-        await setDoc(ref, { allDone: arr }, { merge: true });
+        const xpValue = xpFromDone(allDoneArray);
+        await setDoc(ref, { allDone: allDoneArray, xp: xpValue, displayName: displayName || null, photoURL: photoURL || null, lastSeen: serverTimestamp() }, { merge:true });
       }catch(err){
         console.error("Error saving remote progress:", err);
       }
     }
 
-    // Local storage helpers
-    function loadLocalProgress(){ return JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]"); }
-    function saveLocalProgress(arr){ localStorage.setItem(LOCAL_KEY, JSON.stringify(arr)); }
-
-    // Merge arrays of question-texts (unique)
-    function mergeDoneArrays(arrA, arrB){
-      const s = new Set([...(arrA||[]), ...(arrB||[])]);
-      return Array.from(s);
+    /* ===== Anonymous sign-in: ensure guest has uid so they can appear on leaderboard ===== */
+    async function ensureAnonymousIfNotSignedIn(){
+      if(!auth.currentUser){
+        try{
+          await signInAnonymously(auth);
+        }catch(e){
+          console.warn("Anonymous sign-in failed:", e);
+        }
+      }
     }
 
-    /* ========== App state ==========
-    */
-    let currentCategory = '';
-    let availableQuestions = [];
-    let currentQuestionIndex = -1;
-    let allDone = []; // array of q texts (strings)
-    let currentUser = null;
-
-    // Elements
-    const progressToggle = document.getElementById('progress-toggle');
-    const progressPanel = document.getElementById('progress-panel');
-    const progressList = document.getElementById('progress-list');
-    const progressClose = document.getElementById('progress-close');
-    const signedStatus = document.getElementById('signed-status');
-
-    const signinBtn = document.getElementById('google-signin-btn');
-    const signoutBtn = document.getElementById('google-signout-btn');
-    const userInfoDiv = document.getElementById('user-info');
-
-    // Auth handlers
+    /* ===== Auth handlers ===== */
     signinBtn.addEventListener('click', async () => {
       const provider = new GoogleAuthProvider();
       try {
-        const result = await signInWithPopup(auth, provider);
-        // onAuthStateChanged will handle rest (load/merge)
+        await signInWithPopup(auth, provider);
+        // onAuthStateChanged will handle merging
       } catch(err){
         alert("Sign-in failed: " + (err.message || err));
         console.error(err);
@@ -475,85 +689,85 @@
         userInfoDiv.innerHTML = '';
         currentUser = null;
         signedStatus.innerText = 'no';
-        // keep local progress as-is
+        // keep local data
+        allDone = loadLocalDone();
+        updateLevelUI();
+        updateProgressDisplay();
       }catch(err){ console.error(err) }
     });
 
-    // On auth change: load remote progress and merge with local
     onAuthStateChanged(auth, async (user) => {
+      // When auth state changes (Google sign-in or anonymous), merge local & cloud
       if(user){
         currentUser = user;
         signedStatus.innerText = 'yes';
-        // display user
+        // show user info
         const pic = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar" alt="avatar">` : '';
-        userInfoDiv.innerHTML = `<div class="user-chip">${pic}<span style="font-size:13px">${user.displayName||user.email}</span></div>`;
+        userInfoDiv.innerHTML = `<div class="user-chip">${pic}<span style="font-size:13px">${user.displayName||user.email||('Guest_'+(user.uid?.slice(0,6)||'anon'))}</span></div>`;
         signinBtn.style.display = 'none';
         signoutBtn.style.display = 'inline-block';
 
-        // Load remote and local and merge (remote := union(local, remote))
+        // Load remote & local, merge
         const remote = await loadCloudProgress(user.uid);
-        const local = loadLocalProgress();
-        const merged = mergeDoneArrays(local, remote);
-
-        // Save merged both cloud & local (so other devices see it)
-        await saveCloudProgress(user.uid, merged);
-        saveLocalProgress(merged);
+        const local = loadLocalDone();
+        const mergedSet = new Set([...(remote.allDone||[]), ...(local||[])]);
+        const merged = Array.from(mergedSet);
         allDone = merged;
+        saveLocalDone(allDone);
+        // Save merged to cloud (including displayName / photo)
+        await saveCloudProgress(user.uid, allDone, user.displayName, user.photoURL);
+        updateLevelUI();
         updateProgressDisplay();
       } else {
-        // not signed in
-        currentUser = null;
-        signedStatus.innerText = 'no';
-        signinBtn.style.display = 'inline-flex';
-        signoutBtn.style.display = 'none';
-        userInfoDiv.innerHTML = '';
-        // load local
-        allDone = loadLocalProgress();
-        updateProgressDisplay();
+        // not signed in: ensure anonymous so guest can have uid
+        try{
+          // If you want anonymous sign-in, uncomment ensureAnonymousIfNotSignedIn() line.
+          // For now we will create a guest only if user clicks level to appear on leaderboard.
+          allDone = loadLocalDone();
+          updateLevelUI();
+          updateProgressDisplay();
+          signinBtn.style.display = 'inline-flex';
+          signoutBtn.style.display = 'none';
+          userInfoDiv.innerHTML = '';
+          signedStatus.innerText = 'no';
+        }catch(e){
+          console.error(e);
+        }
       }
     });
 
-    // Initialize allDone from local at startup (if not signed-in yet)
-    (function initFromLocal(){
-      allDone = loadLocalProgress();
+    // initialize local state
+    (function initLocal(){
+      allDone = loadLocalDone();
+      updateLevelUI();
       updateProgressDisplay();
     })();
 
-    /* ========== Category logic ========= */
+    /* ========== Category logic (same UX as before) ========== */
     function getCategoryList(cat){
-      // return array of question objects for that category
-      if(cat === 'Mixed'){
-        // Mixed was built earlier as union (baseCategories['Mixed'])
-        return baseCategories['Mixed'];
-      }
+      if(cat === 'Mixed') return baseCategories['Mixed'];
       return baseCategories[cat] || [];
     }
-
     function loadAvailableQuestions(cat){
       const list = getCategoryList(cat);
-      // filter out those in allDone (compare by question text)
       return list.filter(q => !allDone.includes(q.q));
     }
 
-    window.selectCategory = function(cat){
+    window.selectCategory = async function(cat){
       currentCategory = cat;
       availableQuestions = loadAvailableQuestions(cat);
-      document.getElementById('categories').style.display = 'grid';
-      // show question panel
+      document.getElementById('categories').parentElement.scrollIntoView({behavior:'smooth'});
       const qc = document.getElementById('question-container');
       qc.style.display = 'block';
       qc.setAttribute('aria-hidden','false');
       if(availableQuestions.length === 0){
-        document.getElementById('question-text').innerText = "🎉 All questions done in " + cat + "!";
-        document.getElementById('answer-section')?.remove?.(); // not present
-        document.getElementById('user-answer').value = '';
-        document.getElementById('feedback').innerText = '';
-        document.getElementById('hint').style.display = 'none';
+        questionText.innerText = "🎉 All questions done in " + cat + "!";
+        userAnswer.value = '';
+        feedback.innerText = '';
+        hintDiv.style.display = 'none';
       } else {
         nextQuestion();
       }
-      // hide categories block (keep visible as grid but visually we want to highlight question)
-      document.getElementById('categories').parentElement.scrollIntoView({behavior:'smooth'});
     };
 
     window.goBack = function(){
@@ -563,54 +777,51 @@
 
     function nextQuestion(){
       if(!availableQuestions || availableQuestions.length===0){
-        document.getElementById('question-text').innerText = "🎉 All questions done in " + currentCategory + "!";
-        document.getElementById('user-answer').value = '';
-        document.getElementById('feedback').innerText = '';
-        document.getElementById('hint').style.display = 'none';
+        questionText.innerText = "🎉 All questions done in " + currentCategory + "!";
+        userAnswer.value = '';
+        feedback.innerText = '';
+        hintDiv.style.display = 'none';
         return;
       }
       currentQuestionIndex = Math.floor(Math.random()*availableQuestions.length);
       const qObj = availableQuestions[currentQuestionIndex];
-      document.getElementById('question-text').innerText = qObj.q;
-      document.getElementById('user-answer').value = '';
-      document.getElementById('feedback').innerText = '';
-      document.getElementById('hint').style.display = 'none';
-      // ensure layout doesn't crop
-      document.getElementById('question-container').scrollIntoView({behavior:'smooth', block:'center'});
+      questionText.innerText = qObj.q;
+      userAnswer.value = '';
+      feedback.innerText = '';
+      hintDiv.style.display = 'none';
+      questionContainer.scrollIntoView({behavior:'smooth', block:'center'});
     }
 
     window.checkAnswer = async function(){
-      const input = document.getElementById('user-answer').value.trim().toLowerCase();
-      if(!availableQuestions || currentQuestionIndex < 0){ return; }
+      const input = (userAnswer.value || '').trim().toLowerCase();
+      if(!availableQuestions || currentQuestionIndex < 0) return;
       const qObj = availableQuestions[currentQuestionIndex];
-      const correct = qObj.a.some(a => a.toLowerCase().trim() === input);
-      const fb = document.getElementById('feedback');
+      const correct = qObj.a.some(a => (a||'').toLowerCase().trim() === input);
       if(correct){
-        fb.style.color = 'green';
-        fb.innerText = '✅ Correct!';
+        feedback.style.color = 'green';
+        feedback.innerText = '✅ Correct!';
         // mark done globally
         markDone(qObj.q);
-        // remove from availableQuestions
+        // award XP (implicitly by updating allDone)
+        // remove from availableQuestions and persist
         availableQuestions.splice(currentQuestionIndex,1);
-        // persist
-        await persistProgress();
+        await persistProgressAndMaybeLevelUp();
         updateProgressDisplay();
-        // go to next after a short delay
         setTimeout(() => {
           if(availableQuestions.length === 0){
-            document.getElementById('question-text').innerText = `🎉 All questions done in ${currentCategory}!`;
+            questionText.innerText = `🎉 All questions done in ${currentCategory}!`;
           } else nextQuestion();
         }, 700);
       } else {
-        fb.style.color = '#c04';
-        fb.innerText = '❌ Try again!';
+        feedback.style.color = '#c04';
+        feedback.innerText = '❌ Try again!';
+        // small shake hint - optional
       }
     };
 
     window.showHint = function(){
       if(!availableQuestions || currentQuestionIndex<0) return;
       const qObj = availableQuestions[currentQuestionIndex];
-      const hintDiv = document.getElementById('hint');
       hintDiv.innerText = '💡 ' + (qObj.hint || 'No hint available.');
       hintDiv.style.display = 'block';
     };
@@ -621,69 +832,159 @@
     };
 
     function markDone(qText){
-      if(!allDone.includes(qText)){
-        allDone.push(qText);
+      if(!allDone.includes(qText)) allDone.push(qText);
+    }
+
+    /* ===== Persist + level-up detection ===== */
+    async function persistProgressAndMaybeLevelUp(){
+      // previous level
+      const prevXP = xpFromDone(allDone) - XP_PER_Q; // before awarding XP
+      const prevLevel = getLevelFromXP(prevXP);
+      // save local immediately
+      saveLocalDone(allDone);
+      // update UI (shows XP change)
+      updateLevelUI(true); // animate xp gain
+      // save to cloud if signed-in
+      if(auth.currentUser){
+        await saveCloudProgress(auth.currentUser.uid, allDone, auth.currentUser.displayName, auth.currentUser.photoURL);
+      }
+      const newXP = xpFromDone(allDone);
+      const newLevel = getLevelFromXP(newXP);
+      if(newLevel > prevLevel){
+        // show level-up f/x
+        showLevelUp(newLevel);
+      } else {
+        // show small +10 floating effect
+        showFloatingXP();
       }
     }
 
-    async function persistProgress(){
-      // Save local always
-      saveLocalProgress(allDone);
-      // If signed in -> save cloud as well
-      if(currentUser && currentUser.uid){
-        await saveCloudProgress(currentUser.uid, allDone);
-      }
+    /* ===== Reset modal logic ===== */
+    function openResetModal(){
+      confirmInput.value = '';
+      doResetBtn.disabled = true;
+      doResetBtn.style.opacity = '0.6';
+      resetModal.classList.add('show');
+      resetModal.setAttribute('aria-hidden','false');
+      confirmInput.focus();
     }
-
-    window.resetAllProgress = async function(){
-      if(!confirm("Reset all progress? This clears local & remote (if signed-in).")) return;
+    function closeResetModal(){
+      resetModal.classList.remove('show');
+      resetModal.setAttribute('aria-hidden','true');
+    }
+    confirmInput.addEventListener('input', () => {
+      const val = (confirmInput.value || '').trim();
+      if(val === 'CONFIRM'){
+        doResetBtn.disabled = false;
+        doResetBtn.style.opacity = '1';
+      } else {
+        doResetBtn.disabled = true;
+        doResetBtn.style.opacity = '0.6';
+      }
+    });
+    cancelResetBtn.addEventListener('click', () => closeResetModal());
+    doResetBtn.addEventListener('click', async () => {
+      // Do actual reset: clear local & cloud (if signed-in)
       allDone = [];
-      saveLocalProgress(allDone);
-      if(currentUser && currentUser.uid){
-        await saveCloudProgress(currentUser.uid, []);
+      saveLocalDone(allDone);
+      if(auth.currentUser){
+        await saveCloudProgress(auth.currentUser.uid, allDone, auth.currentUser.displayName, auth.currentUser.photoURL);
       }
+      updateLevelUI();
       updateProgressDisplay();
-      alert("Progress cleared.");
-    };
+      closeResetModal();
+      alert("All progress cleared.");
+    });
+    // expose function for button
+    window.openResetModal = openResetModal;
 
-    /* ========== Progress display ========= */
-    function categoryStats(cat){
-      const list = getCategoryList(cat);
-      const total = list.length;
-      const doneCount = list.filter(q => allDone.includes(q.q)).length;
-      const percent = total ? Math.round((doneCount/total)*100) : 0;
-      return { total, doneCount, percent };
+    /* ===== Level & leaderboard UI ===== */
+    function updateLevelUI(animate=false){
+      const xp = xpFromDone(allDone);
+      const lvl = getLevelFromXP(xp);
+      levelNumber.innerText = 'L' + lvl;
+      levelText.innerText = `Level ${lvl} • ${xp} XP`;
+      // profile small
+      meName.innerText = auth.currentUser?.displayName || auth.currentUser?.email || ('Guest_'+(auth.currentUser?.uid?.slice(0,6) || 'anon'));
+      meLevelSmall.innerText = `Level ${lvl} • ${xp} XP`;
+      // xp bar: compute percent to next threshold
+      const nextThresh = levelNextThreshold(lvl);
+      const baseMinForLevel = LEVEL_RANGES.find(r => r.level === lvl)?.min ?? 0;
+      const span = nextThresh - baseMinForLevel; // xp span for this level
+      const pct = Math.min(100, Math.round(((xp - baseMinForLevel) / span) * 100));
+      meXpFill.style.width = pct + '%';
+      // little animate if requested
+      if(animate){
+        showFloatingXP();
+      }
     }
 
-    function mixedStats(){
-      // Mixed is union list; we already built baseCategories['Mixed']
-      return categoryStats('Mixed');
+    function buildLeaderRow(rank, user){
+      const div = document.createElement('div');
+      div.className = 'leader-row';
+      div.style.background = 'linear-gradient(90deg,#fff,#fbfbff)';
+      div.innerHTML = `
+        <div class="leader-left">
+          <div class="leader-rank">${rank}</div>
+          <div style="width:40px;height:40px;border-radius:999px;overflow:hidden;background:#eee">
+            ${user.photoURL ? `<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover">` : ''}
+          </div>
+          <div>
+            <div class="leader-name">${user.displayName || user.name || ('Guest_'+(user.uid?user.uid.slice(0,6):'anon'))}</div>
+            <div style="font-size:12px;color:var(--muted)">Level ${getLevelFromXP(user.xp || 0)}</div>
+          </div>
+        </div>
+        <div style="min-width:90px;text-align:right">
+          <div class="leader-xp">${user.xp || 0} XP</div>
+        </div>
+      `;
+      return div;
     }
 
-    function updateProgressDisplay(){
-      // Fill progressList with rows for categories + Mixed
-      const cats = Object.keys(baseCategories);
-      // ensure Mixed first
-      const order = ['Mixed','NT','Geo','Combi','Alg'];
-      progressList.innerHTML = '';
-      order.forEach(cat => {
-        if(!(cat in baseCategories)) return;
-        const stats = categoryStats(cat);
-        const color = cat==='Mixed' ? 'linear-gradient(90deg,#007bff,#4CAF50)' : '';
-        const dotColor = (cat==='Mixed') ? '#007bff' : (cat==='NT'? '#4CAF50' : (cat==='Geo' ? '#FFB020' : (cat==='Combi' ? '#A66CFF' : '#FF5C8A')));
-        const row = document.createElement('div');
-        row.className = 'progress-row';
-        row.innerHTML = `
-          <div class="progress-left"><div class="category-dot" style="background:${dotColor}"></div><div style="min-width:72px">${cat}</div></div>
-          <div class="bar-wrap"><div class="bar-fill" style="width:${stats.percent}%; background:${(cat==='Mixed')? 'linear-gradient(90deg,#007bff,#4CAF50)' : 'var(--accent)'}"></div></div>
-          <div style="min-width:48px; text-align:right">${stats.doneCount}/${stats.total} <div style="font-weight:700">${stats.percent}%</div></div>
-        `;
-        progressList.appendChild(row);
-      });
+    async function showLeaderboard(){
+      // ensure anonymous auth present so guest can have uid
+      if(!auth.currentUser){
+        try{ await signInAnonymously(auth); } catch(e){ console.warn("anon sign-in error", e); }
+      }
+      updateLevelUI();
+      // fetch top 10
+      leaderboardList.innerHTML = '<div class="small">Loading leaderboard...</div>';
+      try{
+        const q = query(collection(db, "users"), orderBy("xp","desc"), limit(10));
+        const snap = await getDocs(q);
+        leaderboardList.innerHTML = '';
+        const players = [];
+        snap.forEach(d => {
+          const data = d.data();
+          players.push({ uid:d.id, displayName: data.displayName || null, photoURL: data.photoURL || null, xp: typeof data.xp === 'number' ? data.xp : (Array.isArray(data.allDone)?data.allDone.length*XP_PER_Q:0) });
+        });
+        if(players.length === 0){
+          leaderboardList.innerHTML = '<div class="small">No players yet — be the first!</div>';
+        } else {
+          players.forEach((p, idx) => {
+            leaderboardList.appendChild(buildLeaderRow(idx+1, p));
+          });
+        }
+        // Also fetch own rank (simple method: fetch top 1000 / or compute in client by counting users with xp > mine)
+        // Lightweight approach: count users with greater xp (single query not directly supported without index). We'll fetch top 100 and see if user is there, else show own xp and note rank unknown.
+        const myXP = xpFromDone(allDone);
+        let myRankText = `You: ${myXP} XP (level ${getLevelFromXP(myXP)})`;
+        // Try to find actual rank by querying users with xp > myXP and counting (paged). Here we do a single query counting users with xp greater than mine (limit 10000 not allowed). For simplicity, we will show if user in top10; else show just XP.
+        const inTop = snap.docs.some(d => d.id === auth.currentUser?.uid);
+        if(inTop){
+          const pos = players.findIndex(p => p.uid === auth.currentUser.uid) + 1;
+          myRankText = `Your rank: #${pos} • ${myXP} XP • Level ${getLevelFromXP(myXP)}`;
+        } else {
+          myRankText = `You: ${myXP} XP • Level ${getLevelFromXP(myXP)}`;
+        }
+        yourRankSpot.innerText = myRankText;
+      }catch(e){
+        console.error("Leaderboard fetch error", e);
+        leaderboardList.innerHTML = '<div class="small">Failed to load leaderboard.</div>';
+      }
     }
 
-    // Panel behavior
-    let panelHideTimeout = null;
+    /* ===== show/hide panels behavior ===== */
     progressToggle.addEventListener('mouseenter', () => {
       if(window.innerWidth > 768){
         updateProgressDisplay();
@@ -699,7 +1000,6 @@
     progressPanel.addEventListener('mouseenter', () => { if(panelHideTimeout){ clearTimeout(panelHideTimeout); panelHideTimeout=null } });
     progressPanel.addEventListener('mouseleave', () => { if(window.innerWidth > 768){ progressPanel.classList.remove('show'); progressPanel.setAttribute('aria-hidden','true'); } });
 
-    // Click toggles on mobile / small screens
     progressToggle.addEventListener('click', () => {
       if(window.innerWidth <= 768){
         updateProgressDisplay();
@@ -710,16 +1010,153 @@
     });
     progressClose.addEventListener('click', () => { progressPanel.classList.remove('show'); progressPanel.setAttribute('aria-hidden','true'); });
 
-    /* initial update */
+    // level pill
+    levelPill.addEventListener('click', () => {
+      // show level panel (mobile tap)
+      levelPanel.classList.toggle('show');
+      const shown = levelPanel.classList.contains('show');
+      levelPanel.setAttribute('aria-hidden', !shown);
+      if(shown) showLeaderboard();
+    });
+    levelClose.addEventListener('click', () => { levelPanel.classList.remove('show'); levelPanel.setAttribute('aria-hidden','true'); });
+
+    /* ===== Progress display (categories) ===== */
+    function categoryStats(cat){
+      const list = getCategoryList(cat);
+      const total = list.length;
+      const doneCount = list.filter(q => allDone.includes(q.q)).length;
+      const percent = total ? Math.round((doneCount/total)*100) : 0;
+      return { total, doneCount, percent };
+    }
+
+    function updateProgressDisplay(){
+      const order = ['Mixed','NT','Geo','Combi','Alg'];
+      progressList.innerHTML = '';
+      order.forEach(cat => {
+        if(!(cat in baseCategories)) return;
+        const stats = categoryStats(cat);
+        const dotColor = (cat==='Mixed') ? '#007bff' : (cat==='NT'? '#4CAF50' : (cat==='Geo' ? '#FFB020' : (cat==='Combi' ? '#A66CFF' : '#FF5C8A')));
+        const row = document.createElement('div');
+        row.className = 'progress-row';
+        row.innerHTML = `
+          <div class="progress-left"><div class="category-dot" style="background:${dotColor}"></div><div style="min-width:72px">${cat}</div></div>
+          <div class="bar-wrap"><div class="bar-fill" style="width:${stats.percent}%; background:${(cat==='Mixed')? 'linear-gradient(90deg,#007bff,#4CAF50)' : 'var(--accent)'}"></div></div>
+          <div style="min-width:48px; text-align:right">${stats.doneCount}/${stats.total} <div style="font-weight:700">${stats.percent}%</div></div>
+        `;
+        progressList.appendChild(row);
+      });
+      // Also refresh level pill
+      updateLevelUI(false);
+    }
+
+    /* ===== Floating +10 XP effect & level-up animation ===== */
+    function showFloatingXP(){
+      // tiny floating +10 near level-pill
+      const float = document.createElement('div');
+      float.style.position = 'fixed';
+      // position above level-pill
+      const rect = levelPill.getBoundingClientRect();
+      float.style.left = (rect.left + rect.width/2) + 'px';
+      float.style.top = (rect.top - 6) + 'px';
+      float.style.transform = 'translate(-50%,0)';
+      float.style.fontWeight = '800';
+      float.style.color = 'var(--accent)';
+      float.style.zIndex = 2400;
+      float.innerText = '+10 XP';
+      document.body.appendChild(float);
+      float.animate([
+        { transform: 'translate(-50%,0)', opacity:1 },
+        { transform: 'translate(-50%,-34px)', opacity:0 }
+      ], { duration:900, easing:'cubic-bezier(.2,.9,.2,1)'});
+      setTimeout(()=> float.remove(), 950);
+      updateLevelUI(false);
+    }
+
+    function showLevelUp(newLevel){
+      // small pop on level-pill
+      levelPill.animate([
+        { transform: 'scale(1)' },
+        { transform: 'scale(1.14)' },
+        { transform: 'scale(1)' }
+      ], { duration: 700, easing: 'cubic-bezier(.2,.9,.2,1)'});
+      // confetti burst
+      fireConfetti();
+      // toast
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.left = '50%';
+      toast.style.top = '120px';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = 'linear-gradient(90deg,var(--accent-2),var(--accent))';
+      toast.style.color = 'white';
+      toast.style.padding = '10px 16px';
+      toast.style.borderRadius = '999px';
+      toast.style.zIndex = 2600;
+      toast.style.fontWeight = '800';
+      toast.innerText = `Level up! You're now Level ${newLevel} 🎉`;
+      document.body.appendChild(toast);
+      setTimeout(()=> toast.remove(), 2600);
+      updateLevelUI(false);
+    }
+
+    function fireConfetti(){
+      confettiContainer.innerHTML = '';
+      confettiContainer.style.visibility = 'visible';
+      for(let i=0;i<16;i++){
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.left = (Math.random()*260 - 40) + 'px';
+        el.style.background = ['#ff6b6b','#ffd166','#6bcff6','#a66cff','#4CAF50'][Math.floor(Math.random()*5)];
+        el.style.transform = `rotate(${Math.random()*360}deg)`;
+        el.style.animationDelay = (Math.random()*120) + 'ms';
+        // slightly randomize fall distance/time using inline animation duration via style (override)
+        el.style.animationDuration = (700 + Math.random()*600) + 'ms';
+        confettiContainer.appendChild(el);
+      }
+      setTimeout(()=> confettiContainer.innerHTML = '', 1500);
+    }
+
+    /* ===== Persist & merging helpers used elsewhere ===== */
+    async function persistProgress(){
+      saveLocalDone(allDone);
+      if(auth.currentUser){
+        await saveCloudProgress(auth.currentUser.uid, allDone, auth.currentUser.displayName, auth.currentUser.photoURL);
+      }
+    }
+
+    /* ===== initial update ===== */
     updateProgressDisplay();
 
-    // Ensure question text area never gets cut off by resizing; recalc on resize
-    window.addEventListener('resize', () => {
-      // close panel on big->small transitions to avoid stuck state
-      if(window.innerWidth > 768) progressPanel.classList.remove('show');
-    });
+    /* ===== Leaderboard open on load if panel shown (handled by click) ===== */
+
+    /* ============== NOTES & FIRESTORE RULES (for your console) ==============
+      1) In Firebase Console:
+         - Enable Google sign-in AND Anonymous sign-in (Authentication -> Sign-in method)
+         - In Firestore rules (Firestore Database -> Rules) paste:
+
+           rules_version = '2';
+           service cloud.firestore {
+             match /databases/{database}/documents {
+               match /users/{userId} {
+                 // anyone can read leaderboard
+                 allow read: if true;
+                 // only authenticated users (including anonymous) can write their own doc
+                 allow write: if request.auth != null && request.auth.uid == userId;
+               }
+             }
+           }
+
+      2) Console tips (Firefox):
+         - If you need to see console logs in Firefox: open Web Console (Ctrl+Shift+K).
+         - If you see a "Blocked by CORS" or "Permission denied" error, check network + Firestore rules.
+         - If anonymous sign-in fails, check Authentication > Sign-in method is enabled.
+
+      3) Security note:
+         - Firebase API keys are safe to include in frontend for client apps.
+         - Ensure you do NOT publish service account JSON/keys publicly.
+
+    ======================================================================= */
 
   </script>
 </body>
 </html>
-
