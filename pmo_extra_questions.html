@@ -341,8 +341,58 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-    // ... full JS logic here as in backup ...
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      // YOUR CONFIG HERE
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore();
+
+    const provider = new GoogleAuthProvider();
+
+    const signInBtn = document.getElementById("google-signin-btn");
+    const signOutBtn = document.getElementById("google-signout-btn");
+    const userInfoDiv = document.getElementById("user-info");
+    const signedStatus = document.getElementById("signed-status");
+
+    signInBtn.onclick = async () => {
+      try {
+        await signInWithPopup(auth, provider);
+      } catch(e){console.log(e)}
+    }
+    signOutBtn.onclick = async () => { await signOut(auth) }
+
+    onAuthStateChanged(auth, user=>{
+      if(user){
+        userInfoDiv.innerHTML = '<div class="user-chip"><img class="user-avatar" src="'+user.photoURL+'"/>'+user.displayName+'</div>';
+        signInBtn.style.display="none";
+        signOutBtn.style.display="inline-block";
+        signedStatus.textContent = "yes";
+      }else{
+        userInfoDiv.innerHTML="";
+        signInBtn.style.display="inline-flex";
+        signOutBtn.style.display="none";
+        signedStatus.textContent = "no";
+      }
+    });
+
+    // Progress toggle
+    const toggleBtn = document.getElementById("progress-toggle");
+    const panel = document.getElementById("progress-panel");
+    const closeBtn = document.getElementById("progress-close");
+    toggleBtn.onclick=()=>{panel.classList.toggle("show");};
+    closeBtn.onclick=()=>{panel.classList.remove("show")};
+
+    // Placeholder functions
+    function selectCategory(cat){ alert("Select "+cat) }
+    function resetAllProgress(){ alert("Reset all") }
+    function checkAnswer(){ alert("Check") }
+    function showHint(){ alert("Hint") }
+    function skipQuestion(){ alert("Skip") }
+    function goBack(){ document.getElementById("question-container").style.display="none"; }
+
   </script>
 </body>
 </html>
