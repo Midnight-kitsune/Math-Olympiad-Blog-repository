@@ -227,4 +227,164 @@
     }
 
     .input-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center }
-    #user-answer{ flex:1; min-width:160
+    #user-answer{ flex:1; min-width:160px; padding:10px 12px; border-radius:10px; border:1px solid rgba(12,20,32,0.06) }
+    .controls{ display:flex; gap:8px; flex-wrap:wrap }
+    .btn{
+      background:var(--accent);
+      color:white;
+      padding:10px 12px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .btn.ghost{ background:transparent;color:var(--accent); border:1px solid rgba(76,175,80,0.12) }
+
+    #feedback{ margin-top:8px; font-weight:700; min-height:20px; color:var(--muted) }
+    #hint{ color:var(--muted); margin-top:6px; display:none }
+
+    /* footer / small */
+    .small{ font-size:13px; color:var(--muted) }
+
+    /* responsive tweaks */
+    @media (max-width:720px){
+      body{ padding:12px; padding-top:88px }
+      #progress-toggle{ top:10px; padding:8px 12px; font-size:14px }
+      #progress-panel{ top:54px; width:94% }
+      .brand .logo{ width:40px;height:40px }
+      #question-text{ font-size:16px }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top progress toggle -->
+  <div id="progress-toggle" title="Show progress">📊 Progress</div>
+
+  <!-- Progress panel -->
+  <div id="progress-panel" aria-hidden="true">
+    <div id="progress-top">
+      <h3>Category progress</h3>
+      <button id="progress-close" aria-label="Close progress">✖</button>
+    </div>
+    <div class="progress-list" id="progress-list">
+      <!-- Filled dynamically -->
+    </div>
+    <div class="small">Progress is synced to your account when signed-in. Otherwise it's saved locally to this device.</div>
+  </div>
+
+  <div class="container">
+    <header>
+      <a class="brand" href="#">
+        <div class="logo">PMO</div>
+        <div>
+          <div style="font-size:15px">PMO Practice</div>
+          <div style="font-size:12px; color:var(--muted)">Sharpen problem solving</div>
+        </div>
+      </a>
+
+      <div class="auth">
+        <div id="user-info"></div>
+        <button id="google-signin-btn" class="google-btn">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="G" style="width:18px;height:18px">
+          Sign in with Google
+        </button>
+        <button id="google-signout-btn" class="signout-btn" style="display:none">Sign out</button>
+      </div>
+    </header>
+
+    <main class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h2 style="margin:0 0 6px 0">Choose a category</h2>
+          <div class="small">Questions are globally marked done — finishing one removes it from every category.</div>
+        </div>
+        <div class="small">Signed-in: <span id="signed-status">no</span></div>
+      </div>
+
+      <div id="categories" class="category-grid" style="margin-top:12px">
+        <!-- Buttons filled in initial markup -->
+        <button class="cat-btn" data-cat="NT" onclick="selectCategory('NT')">Number Theory</button>
+        <button class="cat-btn" data-cat="Geo" onclick="selectCategory('Geo')">Geometry</button>
+        <button class="cat-btn" data-cat="Combi" onclick="selectCategory('Combi')">Combinatorics</button>
+        <button class="cat-btn" data-cat="Alg" onclick="selectCategory('Alg')">Algebra</button>
+        <button class="cat-btn" data-cat="Mixed" onclick="selectCategory('Mixed')">Mixed</button>
+        <button class="cat-btn" onclick="resetAllProgress()" style="background:linear-gradient(90deg,#fff,#fff); border:1px solid rgba(200,50,50,0.08); color:#c0392b">Reset All Progress</button>
+      </div>
+    </main>
+
+    <!-- Question card -->
+    <section id="question-container" class="card" aria-hidden="true">
+      <div id="question-text">Question text</div>
+
+      <div class="input-row">
+        <input id="user-answer" placeholder="Type your answer ( e.g 1 or 1/2)" />
+        <div class="controls">
+          <button class="btn" onclick="checkAnswer()">Submit</button>
+          <button class="btn ghost" onclick="showHint()">Hint</button>
+          <button class="btn ghost" onclick="skipQuestion()">Skip</button>
+        </div>
+      </div>
+
+      <div id="feedback"></div>
+      <div id="hint"></div>
+      <div style="display:flex;justify-content:flex-end">
+        <button class="btn ghost" id="back-btn" onclick="goBack()" style="margin-top:12px">Back to Categories</button>
+      </div>
+    </section>
+
+    <div style="height:12px"></div>
+    <div class="small" style="text-align:center">Built with ❤️ — progress sync optional</div>
+  </div>
+
+  <!-- Firebase + App logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    const db = getFirestore();
+
+    const signInBtn = document.getElementById('google-signin-btn');
+    const signOutBtn = document.getElementById('google-signout-btn');
+    const userInfo = document.getElementById('user-info');
+    const signedStatus = document.getElementById('signed-status');
+
+    signInBtn.addEventListener('click', () => {
+      signInWithPopup(auth, provider);
+    });
+
+    signOutBtn.addEventListener('click', () => {
+      signOut(auth);
+    });
+
+    onAuthStateChanged(auth, user => {
+      if(user){
+        userInfo.innerHTML = `<div class="user-chip"><img src="${user.photoURL}" class="user-avatar">${user.displayName}</div>`;
+        signInBtn.style.display='none';
+        signOutBtn.style.display='inline-flex';
+        signedStatus.textContent='yes';
+      }else{
+        userInfo.innerHTML='';
+        signInBtn.style.display='inline-flex';
+        signOutBtn.style.display='none';
+        signedStatus.textContent='no';
+      }
+    });
+
+  </script>
+
+</body>
+</html>
