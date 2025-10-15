@@ -26,7 +26,7 @@
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
       padding:18px;
-      padding-top:84px; /* safe space for top toggle */
+      padding-top:84px;
       display:flex;
       align-items:flex-start;
       justify-content:center;
@@ -138,8 +138,10 @@
       font-size:18px;
     }
     .brand .logo{
-      width:44px; height:44px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      display:inline-grid; place-items:center; color:white; font-weight:800; font-size:18px; box-shadow:0 6px 18px rgba(76,175,80,0.18);
+      width:44px; height:44px; border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:inline-grid; place-items:center; color:white; font-weight:800; font-size:18px;
+      box-shadow:0 6px 18px rgba(76,175,80,0.18);
     }
 
     /* auth area */
@@ -237,7 +239,9 @@
       border-radius:10px;
       cursor:pointer;
       font-weight:700;
+      transition:transform .12s ease;
     }
+    .btn:hover{ transform:translateY(-2px) }
     .btn.ghost{ background:transparent;color:var(--accent); border:1px solid rgba(76,175,80,0.12) }
 
     #feedback{ margin-top:8px; font-weight:700; min-height:20px; color:var(--muted) }
@@ -245,6 +249,54 @@
 
     /* footer / small */
     .small{ font-size:13px; color:var(--muted) }
+
+    /* reset modal animation */
+    #reset-modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.5);
+      z-index:1500;
+      align-items:center;
+      justify-content:center;
+      padding:12px;
+      animation:fadeIn 0.25s ease forwards;
+    }
+    #reset-modal .modal-content{
+      background:white;
+      border-radius:12px;
+      padding:20px;
+      max-width:400px;
+      width:100%;
+      box-shadow:0 10px 40px rgba(0,0,0,0.2);
+      text-align:center;
+      transform:translateY(-30px);
+      animation:slideDown 0.3s ease forwards;
+    }
+    #reset-modal input{
+      width:100%;
+      padding:10px 12px;
+      margin:12px 0;
+      border-radius:8px;
+      border:1px solid #ccc;
+      text-align:center;
+      font-weight:600;
+    }
+    #reset-modal button{
+      padding:10px 18px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+      transition:all 0.2s ease;
+    }
+    #reset-confirm-btn{ background:#c0392b;color:white }
+    #reset-cancel-btn{ background:#bdc3c7;color:#2c3e50 }
+
+    #reset-modal button:hover{ transform:scale(1.05); }
+
+    @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+    @keyframes slideDown{ from{transform:translateY(-30px)} to{transform:translateY(0)} }
 
     /* responsive tweaks */
     @media (max-width:720px){
@@ -257,6 +309,7 @@
   </style>
 </head>
 <body>
+
   <!-- Top progress toggle -->
   <div id="progress-toggle" title="Show progress">📊 Progress</div>
 
@@ -305,419 +358,101 @@
         <!-- Buttons filled in initial markup -->
         <button class="cat-btn" data-cat="NT" onclick="selectCategory('NT')">Number Theory</button>
         <button class="cat-btn" data-cat="Geo" onclick="selectCategory('Geo')">Geometry</button>
-        <button class="cat-btn" data-cat="Combi" onclick="selectCategory('Combi')">Combinatorics</button>
+        <button class="cat-btn" data-cat="Comb" onclick="selectCategory('Comb')">Combinatorics</button>
         <button class="cat-btn" data-cat="Alg" onclick="selectCategory('Alg')">Algebra</button>
         <button class="cat-btn" data-cat="Mixed" onclick="selectCategory('Mixed')">Mixed</button>
-        <button class="cat-btn" onclick="resetAllProgress()" style="background:linear-gradient(90deg,#fff,#fff); border:1px solid rgba(200,50,50,0.08); color:#c0392b">Reset All Progress</button>
+        <button class="cat-btn ghost" onclick="resetAllProgress()">Reset All Progress</button>
+      </div>
+
+      <div id="question-container">
+        <div id="question-text"></div>
+        <div class="input-row">
+          <input type="text" id="user-answer" placeholder="Type your answer">
+          <div class="controls">
+            <button class="btn" onclick="checkAnswer()">Submit</button>
+            <button class="btn ghost" onclick="showHint()">Hint</button>
+          </div>
+        </div>
+        <div id="feedback"></div>
+        <div id="hint"></div>
       </div>
     </main>
-
-    <!-- Question card -->
-    <section id="question-container" class="card" aria-hidden="true">
-      <div id="question-text">Question text</div>
-
-      <div class="input-row">
-        <input id="user-answer" placeholder="Type your answer ( e.g 1 or 1/2)" />
-        <div class="controls">
-          <button class="btn" onclick="checkAnswer()">Submit</button>
-          <button class="btn ghost" onclick="showHint()">Hint</button>
-          <button class="btn ghost" onclick="skipQuestion()">Skip</button>
-        </div>
-      </div>
-
-      <div id="feedback"></div>
-      <div id="hint"></div>
-      <div style="display:flex;justify-content:flex-end">
-        <button class="btn ghost" id="back-btn" onclick="goBack()" style="margin-top:12px">Back to Categories</button>
-      </div>
-    </section>
-
-    <div style="height:12px"></div>
-    <div class="small" style="text-align:center">Built with ❤️ — progress sync optional</div>
   </div>
 
-  <!-- Firebase + App logic -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+  <!-- Reset confirmation modal -->
+  <div id="reset-modal">
+    <div class="modal-content">
+      <h3 style="margin-top:0;color:#c0392b">⚠️ Warning!</h3>
+      <p>All your progress and levels will be cleared. You need to start again from zero.<br><br>
+      To confirm, type <strong>CONFIRM</strong> below.</p>
+      <input type="text" id="reset-confirm-input" placeholder="Type CONFIRM">
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:10px">
+        <button id="reset-confirm-btn">Reset</button>
+        <button id="reset-cancel-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
 
-    /* ====== CONFIG - replace with your project's config if needed ====== */
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpSyQVF76lRNRVemUnGmuGXs8Xi7OZ77w",
-      authDomain: "pmopractise.firebaseapp.com",
-      projectId: "pmopractise",
-      storageBucket: "pmopractise.firebasestorage.app",
-      messagingSenderId: "195352280795",
-      appId: "1:195352280795:web:fd8f97064b8c7f933bd6fe",
-      measurementId: "G-MBPF7J64LD"
-    };
+  <script>
+    // Progress panel toggle
+    const toggle = document.getElementById('progress-toggle');
+    const panel = document.getElementById('progress-panel');
+    const closeBtn = document.getElementById('progress-close');
+    toggle.onclick = ()=>panel.classList.toggle('show');
+    closeBtn.onclick = ()=>panel.classList.remove('show');
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    /* ========== Questions dataset ==========
-       NOTE: use the complete questions you want. Identify questions by their 'q' string.
-    */
-    const baseCategories = {
-      'NT': [
-        { q:"The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a:["7","seven"], hint:"Try small primes and remember a+b=90 for acute angles." },
-        { q:"A palindrome between 1000 and 10,000 is chosen at random. What is the probability that it is divisible by 7?", a:["1/5","1 ÷ 5"], hint:"Write palindrome as 1001a + 110b." },
-        { q:"Base-nine number N = 27,006,000,052₉. Remainder when divided by 5?", a:["3"], hint:"Change the number into base 10 and compute mod 5." }
-      ],
-      'Combi': [
-        { q:"How many ways to rearrange SYNONYMS?", a:["5040","7!"], hint:"7 distinct letters -> 7!."},
-        { q:"How many 4-digit numbers have at least one digit that is 2 or 3?", a:["5416"], hint:"Use complement: total - none of digits {2,3}."},
-        { q:"How many subsets of {1,...,8} are subsets of neither {1..5} nor {4..8}?", a:["196"], hint:"Counting complements helps."}
-      ],
-      'Geo': [
-        { q:"△ABC is isosceles with BC=AC, ∠ACB=40°. Circle with diameter BC meets AC, AB at D,E. ∠BFC=?", a:["110","110°"], hint:"Draw the diagram and use cyclic properties."}
-      ],
-      'Alg': [
-        { q:"P(x)=x³+x²−r²x-2020 with roots r,s,t. Find P(1).", a:["-4038"], hint:" Since one root is r, what equation do you get when you put x=r in P(x)."}
-      ]
-    };
-
-    // Build deduplicated Mixed as union (by q text)
-    function buildMixed(){
-      const seen = new Set();
-      const mixed = [];
-      Object.keys(baseCategories).forEach(cat => {
-        baseCategories[cat].forEach(qObj => {
-          if(!seen.has(qObj.q)){
-            seen.add(qObj.q);
-            mixed.push(qObj);
-          }
-        });
-      });
-      return mixed;
-    }
-    baseCategories['Mixed'] = buildMixed();
-
-    /* ========== Storage logic ==========
-       - If signed-in: progress saved in Firestore under `users/{uid}` doc field `allDone` (array of q strings)
-       - If not signed-in: saved in localStorage key `pmo_all_done`
-       - On sign-in we merge local->cloud (no loss)
-    */
-    const LOCAL_KEY = "pmo_all_done";
-    async function loadCloudProgress(uid){
-      try{
-        const ref = doc(db, "users", uid);
-        const snap = await getDoc(ref);
-        if(snap.exists()){
-          const data = snap.data();
-          return Array.isArray(data.allDone) ? data.allDone : [];
-        } else {
-          // create a doc with empty allDone
-          await setDoc(ref, { allDone: [] });
-          return [];
-        }
-      }catch(err){
-        console.error("Error loading remote progress:", err);
-        return [];
-      }
-    }
-    async function saveCloudProgress(uid, arr){
-      try{
-        const ref = doc(db, "users", uid);
-        await setDoc(ref, { allDone: arr }, { merge: true });
-      }catch(err){
-        console.error("Error saving remote progress:", err);
-      }
-    }
-
-    // Local storage helpers
-    function loadLocalProgress(){ return JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]"); }
-    function saveLocalProgress(arr){ localStorage.setItem(LOCAL_KEY, JSON.stringify(arr)); }
-
-    // Merge arrays of question-texts (unique)
-    function mergeDoneArrays(arrA, arrB){
-      const s = new Set([...(arrA||[]), ...(arrB||[])]);
-      return Array.from(s);
-    }
-
-    /* ========== App state ==========
-    */
-    let currentCategory = '';
-    let availableQuestions = [];
-    let currentQuestionIndex = -1;
-    let allDone = []; // array of q texts (strings)
-    let currentUser = null;
-
-    // Elements
-    const progressToggle = document.getElementById('progress-toggle');
-    const progressPanel = document.getElementById('progress-panel');
-    const progressList = document.getElementById('progress-list');
-    const progressClose = document.getElementById('progress-close');
-    const signedStatus = document.getElementById('signed-status');
-
-    const signinBtn = document.getElementById('google-signin-btn');
-    const signoutBtn = document.getElementById('google-signout-btn');
-    const userInfoDiv = document.getElementById('user-info');
-
-    // Auth handlers
-    signinBtn.addEventListener('click', async () => {
-      const provider = new GoogleAuthProvider();
-      try {
-        const result = await signInWithPopup(auth, provider);
-        // onAuthStateChanged will handle rest (load/merge)
-      } catch(err){
-        alert("Sign-in failed: " + (err.message || err));
-        console.error(err);
-      }
-    });
-
-    signoutBtn.addEventListener('click', async () => {
-      try{
-        await signOut(auth);
-        userInfoDiv.innerHTML = '';
-        currentUser = null;
-        signedStatus.innerText = 'no';
-        // keep local progress as-is
-      }catch(err){ console.error(err) }
-    });
-
-    // On auth change: load remote progress and merge with local
-    onAuthStateChanged(auth, async (user) => {
-      if(user){
-        currentUser = user;
-        signedStatus.innerText = 'yes';
-        // display user
-        const pic = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar" alt="avatar">` : '';
-        userInfoDiv.innerHTML = `<div class="user-chip">${pic}<span style="font-size:13px">${user.displayName||user.email}</span></div>`;
-        signinBtn.style.display = 'none';
-        signoutBtn.style.display = 'inline-block';
-
-        // Load remote and local and merge (remote := union(local, remote))
-        const remote = await loadCloudProgress(user.uid);
-        const local = loadLocalProgress();
-        const merged = mergeDoneArrays(local, remote);
-
-        // Save merged both cloud & local (so other devices see it)
-        await saveCloudProgress(user.uid, merged);
-        saveLocalProgress(merged);
-        allDone = merged;
-        updateProgressDisplay();
-      } else {
-        // not signed in
-        currentUser = null;
-        signedStatus.innerText = 'no';
-        signinBtn.style.display = 'inline-flex';
-        signoutBtn.style.display = 'none';
-        userInfoDiv.innerHTML = '';
-        // load local
-        allDone = loadLocalProgress();
-        updateProgressDisplay();
-      }
-    });
-
-    // Initialize allDone from local at startup (if not signed-in yet)
-    (function initFromLocal(){
-      allDone = loadLocalProgress();
-      updateProgressDisplay();
-    })();
-
-    /* ========== Category logic ========= */
-    function getCategoryList(cat){
-      // return array of question objects for that category
-      if(cat === 'Mixed'){
-        // Mixed was built earlier as union (baseCategories['Mixed'])
-        return baseCategories['Mixed'];
-      }
-      return baseCategories[cat] || [];
-    }
-
-    function loadAvailableQuestions(cat){
-      const list = getCategoryList(cat);
-      // filter out those in allDone (compare by question text)
-      return list.filter(q => !allDone.includes(q.q));
-    }
-
-    window.selectCategory = function(cat){
-      currentCategory = cat;
-      availableQuestions = loadAvailableQuestions(cat);
-      document.getElementById('categories').style.display = 'grid';
-      // show question panel
-      const qc = document.getElementById('question-container');
-      qc.style.display = 'block';
-      qc.setAttribute('aria-hidden','false');
-      if(availableQuestions.length === 0){
-        document.getElementById('question-text').innerText = "🎉 All questions done in " + cat + "!";
-        document.getElementById('answer-section')?.remove?.(); // not present
-        document.getElementById('user-answer').value = '';
-        document.getElementById('feedback').innerText = '';
-        document.getElementById('hint').style.display = 'none';
-      } else {
-        nextQuestion();
-      }
-      // hide categories block (keep visible as grid but visually we want to highlight question)
-      document.getElementById('categories').parentElement.scrollIntoView({behavior:'smooth'});
-    };
-
-    window.goBack = function(){
-      document.getElementById('question-container').style.display = 'none';
-      document.getElementById('categories').parentElement.scrollIntoView({behavior:'smooth'});
-    };
-
-    function nextQuestion(){
-      if(!availableQuestions || availableQuestions.length===0){
-        document.getElementById('question-text').innerText = "🎉 All questions done in " + currentCategory + "!";
-        document.getElementById('user-answer').value = '';
-        document.getElementById('feedback').innerText = '';
-        document.getElementById('hint').style.display = 'none';
-        return;
-      }
-      currentQuestionIndex = Math.floor(Math.random()*availableQuestions.length);
-      const qObj = availableQuestions[currentQuestionIndex];
-      document.getElementById('question-text').innerText = qObj.q;
-      document.getElementById('user-answer').value = '';
-      document.getElementById('feedback').innerText = '';
-      document.getElementById('hint').style.display = 'none';
-      // ensure layout doesn't crop
-      document.getElementById('question-container').scrollIntoView({behavior:'smooth', block:'center'});
-    }
-
-    window.checkAnswer = async function(){
-      const input = document.getElementById('user-answer').value.trim().toLowerCase();
-      if(!availableQuestions || currentQuestionIndex < 0){ return; }
-      const qObj = availableQuestions[currentQuestionIndex];
-      const correct = qObj.a.some(a => a.toLowerCase().trim() === input);
-      const fb = document.getElementById('feedback');
-      if(correct){
-        fb.style.color = 'green';
-        fb.innerText = '✅ Correct!';
-        // mark done globally
-        markDone(qObj.q);
-        // remove from availableQuestions
-        availableQuestions.splice(currentQuestionIndex,1);
-        // persist
-        await persistProgress();
-        updateProgressDisplay();
-        // go to next after a short delay
-        setTimeout(() => {
-          if(availableQuestions.length === 0){
-            document.getElementById('question-text').innerText = `🎉 All questions done in ${currentCategory}!`;
-          } else nextQuestion();
-        }, 700);
-      } else {
-        fb.style.color = '#c04';
-        fb.innerText = '❌ Try again!';
-      }
-    };
-
-    window.showHint = function(){
-      if(!availableQuestions || currentQuestionIndex<0) return;
-      const qObj = availableQuestions[currentQuestionIndex];
-      const hintDiv = document.getElementById('hint');
-      hintDiv.innerText = '💡 ' + (qObj.hint || 'No hint available.');
-      hintDiv.style.display = 'block';
-    };
-
-    window.skipQuestion = function(){
-      if(!availableQuestions || availableQuestions.length===0) return;
-      nextQuestion();
-    };
-
-    function markDone(qText){
-      if(!allDone.includes(qText)){
-        allDone.push(qText);
-      }
-    }
-
-    async function persistProgress(){
-      // Save local always
-      saveLocalProgress(allDone);
-      // If signed in -> save cloud as well
-      if(currentUser && currentUser.uid){
-        await saveCloudProgress(currentUser.uid, allDone);
-      }
-    }
-
-    window.resetAllProgress = async function(){
-      if(!confirm("Reset all progress? This clears local & remote (if signed-in).")) return;
-      allDone = [];
-      saveLocalProgress(allDone);
-      if(currentUser && currentUser.uid){
-        await saveCloudProgress(currentUser.uid, []);
-      }
-      updateProgressDisplay();
-      alert("Progress cleared.");
-    };
-
-    /* ========== Progress display ========= */
-    function categoryStats(cat){
-      const list = getCategoryList(cat);
-      const total = list.length;
-      const doneCount = list.filter(q => allDone.includes(q.q)).length;
-      const percent = total ? Math.round((doneCount/total)*100) : 0;
-      return { total, doneCount, percent };
-    }
-
-    function mixedStats(){
-      // Mixed is union list; we already built baseCategories['Mixed']
-      return categoryStats('Mixed');
-    }
-
+    // Dummy progress (for illustration)
+    let allDone = [];
+    const categories = ['NT','Geo','Comb','Alg','Mixed'];
     function updateProgressDisplay(){
-      // Fill progressList with rows for categories + Mixed
-      const cats = Object.keys(baseCategories);
-      // ensure Mixed first
-      const order = ['Mixed','NT','Geo','Combi','Alg'];
-      progressList.innerHTML = '';
-      order.forEach(cat => {
-        if(!(cat in baseCategories)) return;
-        const stats = categoryStats(cat);
-        const color = cat==='Mixed' ? 'linear-gradient(90deg,#007bff,#4CAF50)' : '';
-        const dotColor = (cat==='Mixed') ? '#007bff' : (cat==='NT'? '#4CAF50' : (cat==='Geo' ? '#FFB020' : (cat==='Combi' ? '#A66CFF' : '#FF5C8A')));
-        const row = document.createElement('div');
-        row.className = 'progress-row';
-        row.innerHTML = `
-          <div class="progress-left"><div class="category-dot" style="background:${dotColor}"></div><div style="min-width:72px">${cat}</div></div>
-          <div class="bar-wrap"><div class="bar-fill" style="width:${stats.percent}%; background:${(cat==='Mixed')? 'linear-gradient(90deg,#007bff,#4CAF50)' : 'var(--accent)'}"></div></div>
-          <div style="min-width:48px; text-align:right">${stats.doneCount}/${stats.total} <div style="font-weight:700">${stats.percent}%</div></div>
+      const list = document.getElementById('progress-list');
+      list.innerHTML='';
+      categories.forEach(cat=>{
+        const percent = allDone.filter(x=>x.cat===cat).length/5*100;
+        const row = document.createElement('div'); row.className='progress-row';
+        row.innerHTML=`
+          <div class="progress-left"><span class="category-dot" style="background:${cat==='NT'?'#e74c3c':cat==='Geo'?'#3498db':cat==='Comb'?'#f39c12':cat==='Alg'?'#8e44ad':'#4CAF50'}"></span>${cat}</div>
+          <div class="bar-wrap"><div class="bar-fill" style="width:${percent}%"></div></div>
+          <div>${Math.round(percent)}%</div>
         `;
-        progressList.appendChild(row);
+        list.appendChild(row);
       });
     }
-
-    // Panel behavior
-    let panelHideTimeout = null;
-    progressToggle.addEventListener('mouseenter', () => {
-      if(window.innerWidth > 768){
-        updateProgressDisplay();
-        progressPanel.classList.add('show');
-        progressPanel.setAttribute('aria-hidden','false');
-      }
-    });
-    progressToggle.addEventListener('mouseleave', () => {
-      if(window.innerWidth > 768){
-        panelHideTimeout = setTimeout(()=>{ progressPanel.classList.remove('show'); progressPanel.setAttribute('aria-hidden','true'); }, 450);
-      }
-    });
-    progressPanel.addEventListener('mouseenter', () => { if(panelHideTimeout){ clearTimeout(panelHideTimeout); panelHideTimeout=null } });
-    progressPanel.addEventListener('mouseleave', () => { if(window.innerWidth > 768){ progressPanel.classList.remove('show'); progressPanel.setAttribute('aria-hidden','true'); } });
-
-    // Click toggles on mobile / small screens
-    progressToggle.addEventListener('click', () => {
-      if(window.innerWidth <= 768){
-        updateProgressDisplay();
-        progressPanel.classList.toggle('show');
-        const shown = progressPanel.classList.contains('show');
-        progressPanel.setAttribute('aria-hidden', !shown);
-      }
-    });
-    progressClose.addEventListener('click', () => { progressPanel.classList.remove('show'); progressPanel.setAttribute('aria-hidden','true'); });
-
-    /* initial update */
     updateProgressDisplay();
 
-    // Ensure question text area never gets cut off by resizing; recalc on resize
-    window.addEventListener('resize', () => {
-      // close panel on big->small transitions to avoid stuck state
-      if(window.innerWidth > 768) progressPanel.classList.remove('show');
-    });
+    function saveLocalProgress(data){ localStorage.setItem('progress',JSON.stringify(data)) }
+    function selectCategory(cat){ alert('Selected '+cat) }
+    function checkAnswer(){ alert('Checking answer') }
+    function showHint(){ alert('Hint') }
 
+    // Reset flow with modal
+    window.resetAllProgress = function(){
+      const modal = document.getElementById('reset-modal');
+      const input = document.getElementById('reset-confirm-input');
+      modal.style.display='flex';
+      input.value='';
+      input.focus();
+
+      const confirmBtn = document.getElementById('reset-confirm-btn');
+      const cancelBtn = document.getElementById('reset-cancel-btn');
+
+      confirmBtn.onclick = function(){
+        if(input.value.trim().toUpperCase()==='CONFIRM'){
+          allDone=[];
+          saveLocalProgress(allDone);
+          updateProgressDisplay();
+          modal.style.display='none';
+          alert('✅ All progress has been cleared.');
+        } else {
+          alert('❌ You must type CONFIRM to reset.');
+          input.focus();
+        }
+      };
+
+      cancelBtn.onclick = function(){
+        modal.style.display='none';
+      };
+    };
   </script>
 </body>
 </html>
