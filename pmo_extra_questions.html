@@ -32,7 +32,7 @@
       justify-content:center;
     }
 
-    /* Top progress toggle (centered) */
+    /* Top progress toggle */
     #progress-toggle{
       position:fixed;
       top:14px;
@@ -138,10 +138,8 @@
       font-size:18px;
     }
     .brand .logo{
-      width:44px; height:44px; border-radius:10px;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      display:inline-grid; place-items:center; color:white; font-weight:800; font-size:18px;
-      box-shadow:0 6px 18px rgba(76,175,80,0.18);
+      width:44px; height:44px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:inline-grid; place-items:center; color:white; font-weight:800; font-size:18px; box-shadow:0 6px 18px rgba(76,175,80,0.18);
     }
 
     /* auth area */
@@ -239,9 +237,7 @@
       border-radius:10px;
       cursor:pointer;
       font-weight:700;
-      transition:transform .12s ease;
     }
-    .btn:hover{ transform:translateY(-2px) }
     .btn.ghost{ background:transparent;color:var(--accent); border:1px solid rgba(76,175,80,0.12) }
 
     #feedback{ margin-top:8px; font-weight:700; min-height:20px; color:var(--muted) }
@@ -251,52 +247,8 @@
     .small{ font-size:13px; color:var(--muted) }
 
     /* reset modal animation */
-    #reset-modal{
-      display:none;
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.5);
-      z-index:1500;
-      align-items:center;
-      justify-content:center;
-      padding:12px;
-      animation:fadeIn 0.25s ease forwards;
-    }
-    #reset-modal .modal-content{
-      background:white;
-      border-radius:12px;
-      padding:20px;
-      max-width:400px;
-      width:100%;
-      box-shadow:0 10px 40px rgba(0,0,0,0.2);
-      text-align:center;
-      transform:translateY(-30px);
-      animation:slideDown 0.3s ease forwards;
-    }
-    #reset-modal input{
-      width:100%;
-      padding:10px 12px;
-      margin:12px 0;
-      border-radius:8px;
-      border:1px solid #ccc;
-      text-align:center;
-      font-weight:600;
-    }
-    #reset-modal button{
-      padding:10px 18px;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:700;
-      transition:all 0.2s ease;
-    }
-    #reset-confirm-btn{ background:#c0392b;color:white }
-    #reset-cancel-btn{ background:#bdc3c7;color:#2c3e50 }
-
-    #reset-modal button:hover{ transform:scale(1.05); }
-
-    @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
-    @keyframes slideDown{ from{transform:translateY(-30px)} to{transform:translateY(0)} }
+    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+    @keyframes slideDown { from {transform:translateY(-20px); opacity:0;} to {transform:translateY(0); opacity:1;} }
 
     /* responsive tweaks */
     @media (max-width:720px){
@@ -355,104 +307,115 @@
       </div>
 
       <div id="categories" class="category-grid" style="margin-top:12px">
-        <!-- Buttons filled in initial markup -->
         <button class="cat-btn" data-cat="NT" onclick="selectCategory('NT')">Number Theory</button>
         <button class="cat-btn" data-cat="Geo" onclick="selectCategory('Geo')">Geometry</button>
-        <button class="cat-btn" data-cat="Comb" onclick="selectCategory('Comb')">Combinatorics</button>
+        <button class="cat-btn" data-cat="Combi" onclick="selectCategory('Combi')">Combinatorics</button>
         <button class="cat-btn" data-cat="Alg" onclick="selectCategory('Alg')">Algebra</button>
         <button class="cat-btn" data-cat="Mixed" onclick="selectCategory('Mixed')">Mixed</button>
-        <button class="cat-btn ghost" onclick="resetAllProgress()">Reset All Progress</button>
-      </div>
-
-      <div id="question-container">
-        <div id="question-text"></div>
-        <div class="input-row">
-          <input type="text" id="user-answer" placeholder="Type your answer">
-          <div class="controls">
-            <button class="btn" onclick="checkAnswer()">Submit</button>
-            <button class="btn ghost" onclick="showHint()">Hint</button>
-          </div>
-        </div>
-        <div id="feedback"></div>
-        <div id="hint"></div>
+        <!-- Reset button now triggers modal -->
+        <button class="cat-btn" id="reset-btn" style="background:linear-gradient(90deg,#fff,#fff); border:1px solid rgba(200,50,50,0.08); color:#c0392b">Reset All Progress</button>
       </div>
     </main>
+
+    <section id="question-container" class="card" aria-hidden="true">
+      <div id="question-text">Question text</div>
+
+      <div class="input-row">
+        <input id="user-answer" placeholder="Type your answer ( e.g 1 or 1/2)" />
+        <div class="controls">
+          <button class="btn" onclick="checkAnswer()">Submit</button>
+          <button class="btn ghost" onclick="showHint()">Hint</button>
+          <button class="btn ghost" onclick="skipQuestion()">Skip</button>
+        </div>
+      </div>
+
+      <div id="feedback"></div>
+      <div id="hint"></div>
+      <div style="display:flex;justify-content:flex-end">
+        <button class="btn ghost" id="back-btn" onclick="goBack()" style="margin-top:12px">Back to Categories</button>
+      </div>
+    </section>
+
+    <div style="height:12px"></div>
+    <div class="small" style="text-align:center">Built with ❤️ — progress sync optional</div>
   </div>
 
-  <!-- Reset confirmation modal -->
-  <div id="reset-modal">
-    <div class="modal-content">
-      <h3 style="margin-top:0;color:#c0392b">⚠️ Warning!</h3>
-      <p>All your progress and levels will be cleared. You need to start again from zero.<br><br>
-      To confirm, type <strong>CONFIRM</strong> below.</p>
-      <input type="text" id="reset-confirm-input" placeholder="Type CONFIRM">
-      <div style="display:flex;gap:12px;justify-content:center;margin-top:10px">
-        <button id="reset-confirm-btn">Reset</button>
-        <button id="reset-cancel-btn">Cancel</button>
+  <!-- Reset Confirmation Modal -->
+  <div id="reset-modal" style="
+    display:none; 
+    position:fixed; 
+    inset:0; 
+    background:rgba(0,0,0,0.45); 
+    backdrop-filter:blur(3px); 
+    z-index:2000;
+    display:flex; justify-content:center; align-items:center;">
+    <div style="
+      background:var(--card); 
+      padding:24px 28px; 
+      border-radius:16px; 
+      max-width:400px; 
+      width:90%; 
+      box-shadow:0 12px 40px rgba(0,0,0,0.2);
+      animation:slideDown 0.3s ease;">
+      <h3 style="margin-top:0; color:#c0392b;">⚠️ Warning</h3>
+      <p>All your progress and levels will be cleared. You need to start again from zero.</p>
+      <p>Type <strong>CONFIRM</strong> below to reset:</p>
+      <input type="text" id="confirm-input" placeholder="Type CONFIRM" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(0,0,0,0.2); margin-bottom:12px;" />
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn ghost" id="cancel-reset">Cancel</button>
+        <button class="btn" id="confirm-reset">Reset</button>
       </div>
     </div>
   </div>
 
-  <script>
-    // Progress panel toggle
-    const toggle = document.getElementById('progress-toggle');
-    const panel = document.getElementById('progress-panel');
-    const closeBtn = document.getElementById('progress-close');
-    toggle.onclick = ()=>panel.classList.toggle('show');
-    closeBtn.onclick = ()=>panel.classList.remove('show');
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
-    // Dummy progress (for illustration)
-    let allDone = [];
-    const categories = ['NT','Geo','Comb','Alg','Mixed'];
-    function updateProgressDisplay(){
-      const list = document.getElementById('progress-list');
-      list.innerHTML='';
-      categories.forEach(cat=>{
-        const percent = allDone.filter(x=>x.cat===cat).length/5*100;
-        const row = document.createElement('div'); row.className='progress-row';
-        row.innerHTML=`
-          <div class="progress-left"><span class="category-dot" style="background:${cat==='NT'?'#e74c3c':cat==='Geo'?'#3498db':cat==='Comb'?'#f39c12':cat==='Alg'?'#8e44ad':'#4CAF50'}"></span>${cat}</div>
-          <div class="bar-wrap"><div class="bar-fill" style="width:${percent}%"></div></div>
-          <div>${Math.round(percent)}%</div>
-        `;
-        list.appendChild(row);
-      });
-    }
-    updateProgressDisplay();
-
-    function saveLocalProgress(data){ localStorage.setItem('progress',JSON.stringify(data)) }
-    function selectCategory(cat){ alert('Selected '+cat) }
-    function checkAnswer(){ alert('Checking answer') }
-    function showHint(){ alert('Hint') }
-
-    // Reset flow with modal
-    window.resetAllProgress = function(){
-      const modal = document.getElementById('reset-modal');
-      const input = document.getElementById('reset-confirm-input');
-      modal.style.display='flex';
-      input.value='';
-      input.focus();
-
-      const confirmBtn = document.getElementById('reset-confirm-btn');
-      const cancelBtn = document.getElementById('reset-cancel-btn');
-
-      confirmBtn.onclick = function(){
-        if(input.value.trim().toUpperCase()==='CONFIRM'){
-          allDone=[];
-          saveLocalProgress(allDone);
-          updateProgressDisplay();
-          modal.style.display='none';
-          alert('✅ All progress has been cleared.');
-        } else {
-          alert('❌ You must type CONFIRM to reset.');
-          input.focus();
-        }
-      };
-
-      cancelBtn.onclick = function(){
-        modal.style.display='none';
-      };
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpSyQVF76lRNRVemUnGmuGXs8Xi7OZ77w",
+      authDomain: "pmopractise.firebaseapp.com",
+      projectId: "pmopractise",
+      storageBucket: "pmopractise.firebasestorage.app",
+      messagingSenderId: "195352280795",
+      appId: "1:195352280795:web:fd8f97064b8c7f933bd6fe",
+      measurementId: "G-MBPF7J64LD"
     };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // --- Reset Modal logic ---
+    const resetBtn = document.getElementById('reset-btn');
+    const resetModal = document.getElementById('reset-modal');
+    const cancelReset = document.getElementById('cancel-reset');
+    const confirmReset = document.getElementById('confirm-reset');
+    const confirmInput = document.getElementById('confirm-input');
+
+    resetBtn.addEventListener('click', ()=>{
+      confirmInput.value = '';
+      resetModal.style.display = 'flex';
+      confirmInput.focus();
+    });
+
+    cancelReset.addEventListener('click', ()=>{
+      resetModal.style.display = 'none';
+    });
+
+    confirmReset.addEventListener('click', async ()=>{
+      if(confirmInput.value.trim().toUpperCase() === 'CONFIRM'){
+        // Reset logic (local + Firestore if signed-in)
+        if(localStorage){ localStorage.clear() }
+        // add Firestore reset if needed
+        resetModal.style.display = 'none';
+        alert("Progress cleared! Start fresh.");
+      } else {
+        alert("Type CONFIRM exactly to reset.");
+        confirmInput.focus();
+      }
+    });
   </script>
 </body>
 </html>
