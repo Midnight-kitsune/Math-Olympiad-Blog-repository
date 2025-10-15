@@ -1,61 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>PMO Practise</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ✅ Modern clean look -->
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; background:#f9f9f9; }
-    h1 { color: #333; }
-    .btn { padding: 10px 20px; margin: 10px; cursor: pointer; border: none; border-radius: 8px; }
-    .btn-cat { background-color: #007bff; color: white; }
-    .btn-cat:hover { background-color: #0056b3; }
-    #question-container { margin-top: 30px; }
-    #hint { color: #666; display:none; margin-top: 10px; }
-    #feedback { margin-top: 10px; font-weight: bold; }
-    #answer-section { margin-top: 15px; display:flex; flex-direction:column; align-items:center; gap:10px; }
-    #progress-bar { width: 80%; margin: 10px auto; background: #ddd; border-radius: 10px; overflow:hidden; }
-    .progress { height: 10px; background: #4caf50; width: 0%; }
+    :root {
+      --primary: #4CAF50;
+      --secondary: #007bff;
+      --dark: #2c3e50;
+      --light: #f5f5f5;
+      --text: #333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", Arial, sans-serif;
+    }
+
+    body {
+      background: var(--light);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-top: 10px;
+      color: var(--dark);
+    }
+
+    /* 🌐 Sign in section */
+    .auth-container {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .google-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px 18px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .google-btn img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .google-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .signout-btn {
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .signout-btn:hover {
+      background: #d32f2f;
+    }
+
+    /* Buttons (categories etc.) */
+    .btn {
+      padding: 12px 22px;
+      margin: 8px;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn-cat {
+      background: var(--secondary);
+    }
+
+    .btn-cat:hover {
+      background: #0056b3;
+    }
+
+    #categories {
+      margin-top: 30px;
+      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Question section */
+    #question-container {
+      margin-top: 30px;
+      max-width: 600px;
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    #question-text {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    #answer-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #user-answer {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 80%;
+    }
+
+    #hint {
+      color: #777;
+      display: none;
+      margin-top: 10px;
+    }
+
+    #feedback {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    #back-btn {
+      margin-top: 20px;
+    }
+
+    /* ✅ Floating progress button + panel */
+    #progress-toggle {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--dark);
+      color: white;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      z-index: 1000;
+      font-size: 15px;
+      transition: background 0.3s;
+    }
+
+    #progress-toggle:hover {
+      background: var(--primary);
+    }
+
+    #progress-panel {
+      position: fixed;
+      top: 55px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 15px 25px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .progress-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .progress-bar {
+      flex: 1;
+      background: #eee;
+      height: 8px;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: var(--primary);
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s;
+    }
+
+    #progress-close {
+      display: none;
+      text-align: right;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      #progress-close {
+        display: block;
+      }
+    }
   </style>
 </head>
+
 <body>
+  <div id="progress-toggle">📊 Progress</div>
 
-  <main class="content">
-    <h1>Practise for PMO</h1>
+  <div id="progress-panel">
+    <div id="progress-close">✖</div>
+    <h3>Category Progress</h3>
+    <div id="progress-list"></div>
+  </div>
 
+  <h1>PMO Practice</h1>
+
+  <div class="auth-container">
     <div id="signin-msg">Sign in/up with Google to save progress (optional)</div>
-    <div style="margin-bottom:30px;">
-      <button id="google-signin-btn" class="btn btn-cat">Sign in with Google</button>
-      <button id="google-signout-btn" class="btn btn-cat" style="display:none;">Sign out</button>
-    </div>
-    <div id="user-info" style="margin-bottom:20px;"></div>
+    <button id="google-signin-btn" class="google-btn">
+      <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" />
+      Sign in with Google
+    </button>
+    <button id="google-signout-btn" class="signout-btn" style="display:none;">Sign out</button>
+    <div id="user-info"></div>
+  </div>
 
-    <div id="categories">
-      <button class="btn btn-cat" onclick="selectCategory('NT')">Number Theory</button>
-      <button class="btn btn-cat" onclick="selectCategory('Geo')">Geometry</button>
-      <button class="btn btn-cat" onclick="selectCategory('Combi')">Combinatorics</button>
-      <button class="btn btn-cat" onclick="selectCategory('Alg')">Algebra</button>
-      <button class="btn btn-cat" onclick="selectCategory('Mixed')">Mixed</button>
-      <button class="btn btn-cat" onclick="resetAllProgress()">Reset All Progress</button>
-    </div>
+  <div id="categories">
+    <button class="btn btn-cat" onclick="selectCategory('NT')">Number Theory</button>
+    <button class="btn btn-cat" onclick="selectCategory('Geo')">Geometry</button>
+    <button class="btn btn-cat" onclick="selectCategory('Combi')">Combinatorics</button>
+    <button class="btn btn-cat" onclick="selectCategory('Alg')">Algebra</button>
+    <button class="btn btn-cat" onclick="selectCategory('Mixed')">Mixed</button>
+    <button class="btn btn-cat" onclick="resetAllProgress()">Reset All Progress</button>
+  </div>
 
-    <div id="question-container" style="display:none;">
-      <h2 id="question-text"></h2>
-      <div id="answer-section">
-        <input id="user-answer" type="text" placeholder="Type your answer here">
-        <button class="btn btn-cat" onclick="checkAnswer()">Submit</button>
-        <button class="btn btn-cat" onclick="showHint()">Hint</button>
-        <button class="btn btn-cat" onclick="skipQuestion()">Skip</button>
-      </div>
-      <div id="feedback"></div>
-      <div id="hint"></div>
-      <div id="progress-bar"><div class="progress" id="progress"></div></div>
-      <button id="back-btn" class="btn btn-cat" style="display:none;" onclick="goBack()">Back to Categories</button>
+  <div id="question-container">
+    <h2 id="question-text"></h2>
+    <div id="answer-section">
+      <input id="user-answer" type="text" placeholder="Type your answer here" />
+      <button class="btn btn-cat" onclick="checkAnswer()">Submit</button>
+      <button class="btn btn-cat" onclick="showHint()">Hint</button>
+      <button class="btn btn-cat" onclick="skipQuestion()">Skip</button>
     </div>
-  </main>
+    <div id="feedback"></div>
+    <div id="hint"></div>
+    <button id="back-btn" class="btn btn-cat" onclick="goBack()">Back to Categories</button>
+  </div>
 
+  <!-- ✅ Firebase + Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -69,60 +292,60 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    getAnalytics(app);
     const auth = getAuth(app);
 
     const signInBtn = document.getElementById("google-signin-btn");
     const signOutBtn = document.getElementById("google-signout-btn");
     const userInfo = document.getElementById("user-info");
 
-    signInBtn.addEventListener("click", async () => {
+    signInBtn.onclick = async () => {
       const provider = new GoogleAuthProvider();
       try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
+        userInfo.innerHTML = `👋 Hello, <strong>${user.displayName}</strong>`;
         signInBtn.style.display = "none";
-        signOutBtn.style.display = "inline-block";
-      } catch (error) { alert("Sign-in failed: " + error.message); }
-    });
+        signOutBtn.style.display = "block";
+      } catch (error) {
+        alert("Sign-in failed: " + error.message);
+      }
+    };
 
-    signOutBtn.addEventListener("click", async () => {
+    signOutBtn.onclick = async () => {
       await signOut(auth);
       userInfo.innerHTML = "";
-      signInBtn.style.display = "inline-block";
+      signInBtn.style.display = "block";
       signOutBtn.style.display = "none";
-    });
+    };
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        userInfo.innerHTML = `Hello, <strong>${user.displayName}</strong>`;
+        userInfo.innerHTML = `👋 Hello, <strong>${user.displayName}</strong>`;
         signInBtn.style.display = "none";
-        signOutBtn.style.display = "inline-block";
+        signOutBtn.style.display = "block";
       } else {
         userInfo.innerHTML = "";
-        signInBtn.style.display = "inline-block";
+        signInBtn.style.display = "block";
         signOutBtn.style.display = "none";
       }
     });
 
-    // ✅ Questions
+    /* =======================
+       APP LOGIC 
+    ======================= */
     const categories = {
       'NT': [
-        {q:"The acute angles of a right triangle are a and b, where a>b and both a and b are prime numbers. What is the least possible value of b?", a:["7","seven"], hint:"What happens if b=1,2,3,4?"},
-        {q:"A palindrome between 1000 and 10,000 is chosen at random. What is the probability that it is divisible by 7?", a:["1/5"], hint:"Rewrite as 1001a + 110b."},
-        {q:"Base-nine number N = 27,006,000,052₉. Remainder when divided by 5?", a:["3"], hint:"Convert to base 10."}
+        { q: "The acute angles of a right triangle are a and b...", a: ["7"], hint: "Try b=1,2,3,4..." },
+        { q: "A palindrome between 1000 and 10,000 is chosen...", a: ["1/5"], hint: "Rewrite as 1001a + 110b" }
       ],
       'Combi': [
-        {q:"How many ways to rearrange SYNONYMS?", a:["5040","7!"], hint:"Use factorial."},
-        {q:"How many 4-digit numbers have at least one digit that is 2 or 3?", a:["5416"], hint:"Use complement."},
-        {q:"How many subsets of {1,...,8} are subsets of neither {1..5} nor {4..8}?", a:["196"], hint:"Complementary counting."}
+        { q: "How many ways to rearrange SYNONYMS?", a: ["5040", "7!"], hint: "Use factorial" }
       ],
       'Geo': [
-        {q:"△ABC is isosceles with BC=AC, ∠ACB=40°. Circle with diameter BC meets AC, AB at D,E. ∠BFC=?", a:["110"], hint:"Draw diagram."}
+        { q: "△ABC is isosceles...", a: ["110"], hint: "Draw diagram." }
       ],
       'Alg': [
-        {q:"P(x)=x³+x²−2x+2020 with roots r,s,t. Find P(1).", a:["-4038"], hint:"Use Vieta’s theorem."}
+        { q: "P(x)=x³+x²−2x+2020 with roots...", a: ["-4038"], hint: "Use Vieta’s theorem." }
       ]
     };
     categories['Mixed'] = [].concat(categories['NT'], categories['Combi'], categories['Geo'], categories['Alg']);
@@ -131,88 +354,128 @@
     let availableQuestions = [];
     let currentQuestionIndex = -1;
 
-    function saveProgress() {
-      const key = `pmo_progress_${currentCategory}`;
-      const done = categories[currentCategory].filter(q => !availableQuestions.includes(q));
-      localStorage.setItem(key, JSON.stringify(done));
-    }
-
     function loadProgress(cat) {
-      const key = `pmo_progress_${cat}`;
-      const done = JSON.parse(localStorage.getItem(key)) || [];
-      return categories[cat].filter(q => !done.some(dq => dq.q === q.q));
+      const allDone = JSON.parse(localStorage.getItem("pmo_all_done")) || [];
+      return categories[cat].filter(q => !allDone.some(d => d.q === q.q));
     }
 
-    window.selectCategory = function(cat) {
+    function saveQuestionDone(qObj) {
+      let allDone = JSON.parse(localStorage.getItem("pmo_all_done")) || [];
+      if (!allDone.some(d => d.q === qObj.q)) {
+        allDone.push(qObj);
+        localStorage.setItem("pmo_all_done", JSON.stringify(allDone));
+      }
+    }
+
+    function countDone(cat) {
+      const allDone = JSON.parse(localStorage.getItem("pmo_all_done")) || [];
+      const total = categories[cat].length;
+      const done = categories[cat].filter(q => allDone.some(d => d.q === q.q)).length;
+      return { total, done };
+    }
+
+    function updateProgressDisplay() {
+      const list = document.getElementById("progress-list");
+      list.innerHTML = "";
+      Object.keys(categories).forEach(cat => {
+        if (cat === "Mixed") return;
+        const { total, done } = countDone(cat);
+        const percent = total ? Math.round((done / total) * 100) : 0;
+        list.innerHTML += `
+          <div class="progress-item">
+            <span>${cat}</span>
+            <div class="progress-bar"><div class="progress-fill" style="width:${percent}%;"></div></div>
+            <span>${percent}%</span>
+          </div>`;
+      });
+    }
+
+    // Progress panel behavior
+    const panel = document.getElementById("progress-panel");
+    const toggle = document.getElementById("progress-toggle");
+    const closeBtn = document.getElementById("progress-close");
+
+    toggle.addEventListener("mouseenter", () => {
+      if (window.innerWidth > 768) {
+        updateProgressDisplay();
+        panel.style.display = "flex";
+      }
+    });
+    toggle.addEventListener("mouseleave", () => {
+      if (window.innerWidth > 768) setTimeout(() => panel.style.display = "none", 500);
+    });
+
+    toggle.onclick = () => {
+      if (window.innerWidth <= 768) {
+        updateProgressDisplay();
+        panel.style.display = "flex";
+      }
+    };
+
+    closeBtn.onclick = () => (panel.style.display = "none");
+
+    window.selectCategory = function (cat) {
       currentCategory = cat;
       availableQuestions = loadProgress(cat);
-      if (availableQuestions.length === 0) availableQuestions = [...categories[cat]];
-      document.getElementById('categories').style.display = 'none';
-      document.getElementById('back-btn').style.display = 'inline-block';
-      nextQuestion();
-      updateProgressBar();
+      if (availableQuestions.length === 0) {
+        document.getElementById("question-text").innerText = "🎉 All questions done!";
+        document.getElementById("answer-section").style.display = "none";
+      } else {
+        nextQuestion();
+      }
+      document.getElementById("categories").style.display = "none";
+      document.getElementById("question-container").style.display = "block";
     };
 
-    window.resetAllProgress = function() {
-      Object.keys(categories).forEach(cat => {
-        localStorage.removeItem(`pmo_progress_${cat}`);
-      });
-      alert("All progress has been reset!");
-    };
-
-    window.goBack = function() {
-      document.getElementById('question-container').style.display='none';
-      document.getElementById('categories').style.display='block';
+    window.goBack = function () {
+      document.getElementById("question-container").style.display = "none";
+      document.getElementById("categories").style.display = "flex";
     };
 
     function nextQuestion() {
-      const container = document.getElementById('question-container');
-      if (availableQuestions.length === 0) {
-        container.style.display='block';
-        document.getElementById('question-text').innerText="🎉 All questions done!";
-        document.getElementById('answer-section').style.display='none';
-        updateProgressBar();
-        return;
-      }
-      currentQuestionIndex = Math.floor(Math.random() * availableQuestions.length);
-      const qObj = availableQuestions[currentQuestionIndex];
-      container.style.display='block';
-      document.getElementById('question-text').innerText = qObj.q;
-      document.getElementById('answer-section').style.display='flex';
-      document.getElementById('user-answer').value='';
-      document.getElementById('feedback').innerText='';
-      document.getElementById('hint').style.display='none';
-      updateProgressBar();
+      const qObj = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+      currentQuestionIndex = availableQuestions.indexOf(qObj);
+      document.getElementById("question-text").innerText = qObj.q;
+      document.getElementById("user-answer").value = "";
+      document.getElementById("feedback").innerText = "";
+      document.getElementById("hint").style.display = "none";
+      document.getElementById("answer-section").style.display = "flex";
     }
 
-    window.checkAnswer = function() {
-      const ans = document.getElementById('user-answer').value.trim().toLowerCase();
+    window.checkAnswer = function () {
+      const ans = document.getElementById("user-answer").value.trim().toLowerCase();
       const qObj = availableQuestions[currentQuestionIndex];
       if (qObj.a.some(a => a.toLowerCase() === ans)) {
-        document.getElementById('feedback').innerText="✅ Correct!";
+        document.getElementById("feedback").innerText = "✅ Correct!";
+        saveQuestionDone(qObj);
         availableQuestions.splice(currentQuestionIndex, 1);
-        saveProgress();
-        updateProgressBar();
-        setTimeout(nextQuestion, 1500);
+        setTimeout(() => {
+          if (availableQuestions.length === 0) {
+            document.getElementById("question-text").innerText = "🎉 All questions done!";
+            document.getElementById("answer-section").style.display = "none";
+          } else nextQuestion();
+          updateProgressDisplay();
+        }, 1000);
       } else {
-        document.getElementById('feedback').innerText="❌ Try again!";
+        document.getElementById("feedback").innerText = "❌ Try again!";
       }
     };
 
-    window.showHint = function() {
+    window.showHint = function () {
       const qObj = availableQuestions[currentQuestionIndex];
-      document.getElementById('hint').innerText="💡 Hint: " + qObj.hint;
-      document.getElementById('hint').style.display='block';
+      document.getElementById("hint").innerText = "💡 " + qObj.hint;
+      document.getElementById("hint").style.display = "block";
     };
 
-    window.skipQuestion = function() { nextQuestion(); };
+    window.skipQuestion = function () {
+      nextQuestion();
+    };
 
-    function updateProgressBar() {
-      const total = categories[currentCategory].length;
-      const done = total - availableQuestions.length;
-      const percent = Math.floor((done / total) * 100);
-      document.getElementById('progress').style.width = percent + '%';
-    }
+    window.resetAllProgress = function () {
+      localStorage.removeItem("pmo_all_done");
+      alert("All progress has been reset!");
+      updateProgressDisplay();
+    };
   </script>
 </body>
 </html>
