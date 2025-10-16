@@ -437,7 +437,7 @@
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
           <h2 style="margin:0 0 6px 0">Choose a category</h2>
-          <div class="small">Questions are globally marked done — finishing one removes it from every category. Question sources : AOPS</div>
+          <div class="small">Questions are globally marked done — finishing one removes it from every category. Question source : <a href="https://artofproblemsolving.com/"> AOPS </a> and other free resources over internet</div>
         </div>
         <div class="small">Signed-in: <span id="signed-status">no</span></div>
       </div>
@@ -509,12 +509,20 @@
         { q:"Base-nine number N = 27,006,000,052₉. Remainder when divided by 5?", a:["3"], hint:"Change the number into base 10 and compute mod 5." },
         { q:"For each positive integer n, n! denote the product 1·2·3·…·(n−1)·n. What is the remainder when 8! is divided by 6?", a:["0"], hint:"8! contains  2 and 3 as factors" },
         { q:"Find the remainder when ３ × １３ × ２３ × ３３ × ４３ × ５３ × ６３ × ７３ × ８３ × ９３ is divided by 4.", a:["1"], hint:"ａ≡b(mod ｍ) implies ac≡bc(mod ｍ)"},
-        { q:"Find the last 2 digits of (56789)⁴¹.", a:["89"], hint:"89¹⁰ ≡ 1 (mod 100)" },  
+        { q:"Find the last 2 digits of (56789)⁴¹.", a:["89"], hint:"89¹⁰ ≡ 1 (mod 100)" },
+        { q:"How many ordered pairs of integers (ｘ, ｙ) satisfy the equation ｘ²⁰²⁰ + ｙ² = 2ｙ?", a:["4"], hint:"ｘ has to be １, ０, or −１."},
+        { q:"Find the smallest positive integer n such that 32ⁿ = 167x + 2 for some integer x.", a:["133"], hint:"Rewrite as 2^{5n} ≡ 2 (mod 167) and use the order of 2 modulo 167."},
+        { q:" How many zeros are there at the end of 792! when written in base 10?", a:["196"], hint:"Use Legendre's formula to count factors of 5"},
+        { q:"Find the smallest positive integer n such that n⁴ + (n+1)⁴ is composite.", a:["5"], hint:"Check small values of n sequentially."},
+        { q:" Find the sum of the first 5 positive integers n such that n² − 1 is the product of 3 distinct primes.", a:["82"], hint:"Check small n sequentially"},
+        { q:"What is the units digit of the sum 1! + 2! + 3! + 4! + 5! + ⋯ + 1000!?", a:["3"], hint:"For all n ≥ 5, n! ends with 0."},
       ],
       'Combi': [
         { q:"How many ways to rearrange SYNONYMS?", a:["5040","7!"], hint:"7 distinct letters -> 7!."},
         { q:"How many 4-digit numbers have at least one digit that is 2 or 3?", a:["5416"], hint:"Use complement: total - none of digits {2,3}."},
-        { q:"How many subsets of {1,...,8} are subsets of neither {1..5} nor {4..8}?", a:["196"], hint:"Counting complements helps."}
+        { q:"How many subsets of {1,...,8} are subsets of neither {1..5} nor {4..8}?", a:["196"], hint:"Counting complements helps."},
+        { q:"In how many ways can four people sit in a row of five chairs?", a:["120"], hint:"Multiply the number of choices for each person"},
+        { q:"Prasiddha writes all possible rearrangements of the letters in his name. If he can write x rearrangements per minute and it takes him 9 hours to write all of them, find x.", a=["168"], hint:"Count distinct rearrangements considering repeated letters, then divide by total minutes."},
       ],
       'Geo': [
         { q:"△ABC is isosceles with BC=AC, ∠ACB=40°. Circle with diameter BC meets AC, AB at D,E. ∠BFC=?", a:["110","110°"], hint:"Draw the diagram and use cyclic properties."}
